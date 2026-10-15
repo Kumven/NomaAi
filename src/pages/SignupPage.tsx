@@ -7,16 +7,18 @@ import {
   ShieldCheck,
   CheckCircle2,
   Navigation,
-  MapPin
+  MapPin,
+  Sparkles
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { PLATEAU_STATE, requestBrowserLocation } from '../services/locationService';
 import { LocationRequestModal } from '../components/common/LocationRequestModal';
 
 export const SignupPage: React.FC = () => {
+  type SignupStep = 'plan' | 'account' | 'payment';
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUser, activeLga, setActiveState, setUserLocation } = useAppStore();
+  const { setUser, user, activeLga, setActiveState, setUserLocation } = useAppStore();
   const redirectPath =
     (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/';
 
@@ -24,6 +26,8 @@ export const SignupPage: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('08031234567');
   const [countryCode, setCountryCode] = useState('+234');
   const [email, setEmail] = useState('aminu.bello@example.com');
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium'>('free');
+  const [step, setStep] = useState<SignupStep>('plan');
   const [farmLga, setFarmLga] = useState(
     PLATEAU_STATE.lgas.includes(activeLga || '') ? activeLga || '' : ''
   );
@@ -59,15 +63,22 @@ export const SignupPage: React.FC = () => {
         email,
         farmState: PLATEAU_STATE.state,
         farmLga,
+        selectedPlan,
         createdAt: new Date().toISOString()
       });
       setIsLoading(false);
-      navigate(redirectPath, { replace: true });
+      if (selectedPlan === 'premium') {
+        setStep('payment');
+      } else {
+        navigate(redirectPath, { replace: true });
+      }
     }, 700);
   };
 
   return (
-    <div className="min-h-screen bg-[#EDF7EF] py-4 px-3 sm:px-4 flex flex-col justify-between max-w-md mx-auto">
+    <div className={`min-h-screen bg-[#EDF7EF] py-4 px-3 sm:px-4 flex flex-col justify-between w-full ${
+      step === 'plan' ? 'max-w-2xl' : 'max-w-md'
+    } mx-auto`}>
       {/* Top Bar with Back Arrow and Brand */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -105,14 +116,84 @@ export const SignupPage: React.FC = () => {
           {/* Heading */}
           <div className="space-y-1">
             <h1 className="text-2xl sm:text-3xl font-serif font-black text-[#132E1E] tracking-tight">
-              Create your account
+              {step === 'plan' ? 'Choose your plan' : step === 'account' ? 'Create your account' : 'Premium checkout'}
             </h1>
             <p className="text-xs text-[#526056] leading-relaxed">
-              Start detecting crop diseases instantly on your farm.
+              {step === 'plan'
+                ? 'Choose Free or Premium to continue.'
+                : step === 'account'
+                  ? 'Create your Plateau farmer account.'
+                  : 'Your account is created. Review the Premium payment step below.'}
             </p>
           </div>
 
+          {step === 'plan' && (
+            <div className="flex flex-col sm:flex-row gap-3">
+              <section className="flex-1 flex flex-col p-4 rounded-2xl border border-[#D5EEDC] bg-white">
+                <div className="text-sm font-extrabold text-[#132E1E]">Free</div>
+                <div className="mt-0.5 text-xs font-semibold text-[#2D6A4F]">₦0 — Free to use</div>
+                <p className="mt-2 text-xs text-[#526056]">For farmers who need basic farming advice.</p>
+                <ul className="mt-3 flex-1 space-y-1.5 text-xs text-[#1B4332]">
+                  <li>• Upload a sick-plant photo to check what may be wrong</li>
+                  <li>• Check local weather and available weather alerts</li>
+                  <li>• Get basic crop-care advice</li>
+                  <li>• Proposed limit: 3 crop checks per month</li>
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedPlan('free');
+                    setStep('account');
+                  }}
+                  className="w-full mt-4 min-h-11 rounded-xl border border-[#2D6A4F] text-[#1B4332] text-xs font-bold hover:bg-[#EAF7EE] transition"
+                >
+                  Choose Free
+                </button>
+              </section>
+
+              <section className="flex-1 flex flex-col p-4 rounded-2xl border border-[#D5EEDC] bg-white">
+                <div className="flex items-center gap-1.5 text-sm font-extrabold text-[#132E1E]">
+                  <Sparkles className="w-4 h-4 text-[#EFA131]" />
+                  Premium
+                </div>
+                <div className="mt-0.5 text-xs font-semibold text-[#2D6A4F]">Paid monthly subscription</div>
+                <p className="mt-2 text-xs text-[#526056]">For farmers who need more detailed advice and support.</p>
+                <ul className="mt-3 flex-1 space-y-1.5 text-xs text-[#1B4332]">
+                  <li>• Everything in Free, plus more plant disease checks</li>
+                  <li>• Detailed crop and farm-condition advice</li>
+                  <li>• Personalized weather and crop-risk alerts</li>
+                  <li>• Expert support for difficult cases</li>
+                  <li>• Records of past plant problems and advice</li>
+                  <li>• Faster customer support</li>
+                </ul>
+                <p className="mt-3 text-[11px] leading-relaxed text-amber-900">
+                  Price and usage limits are being tested; they are not set yet.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedPlan('premium');
+                    setStep('account');
+                  }}
+                  className="w-full mt-3 min-h-11 btn-golden rounded-xl text-xs font-bold"
+                >
+                  Choose Premium
+                </button>
+              </section>
+            </div>
+          )}
+
           {/* Form */}
+          {step === 'account' && (
+          <>
+          <div className="flex items-center justify-between rounded-xl bg-[#F4FAF5] px-3 py-2 text-xs">
+            <span className="font-semibold text-[#1B4332]">
+              Selected plan: <strong>{selectedPlan === 'free' ? 'Free (₦0)' : 'Premium (monthly)'}</strong>
+            </span>
+            <button type="button" onClick={() => setStep('plan')} className="font-bold text-[#2D6A4F] underline">
+              Change
+            </button>
+          </div>
           <form onSubmit={handleSignUp} className="space-y-3.5">
             {/* Full Name */}
             <div className="space-y-1">
@@ -241,7 +322,7 @@ export const SignupPage: React.FC = () => {
                 <span>Creating account...</span>
               ) : (
                 <>
-                  <span>Create Account</span>
+                  <span>{selectedPlan === 'free' ? 'Create Free Account' : 'Create Account & Continue to Payment'}</span>
                   <span className="text-base font-bold">→</span>
                 </>
               )}
@@ -280,17 +361,39 @@ export const SignupPage: React.FC = () => {
               Sign in
             </Link>
           </p>
-        </div>
-      </div>
+          </>
+          )}
 
-      {/* Footer Hotline */}
-      <div className="py-4 text-center">
-        <p className="text-[11px] font-medium text-[#526056] flex items-center justify-center gap-1.5">
-          <span>📞 Farmer Hotline:</span>
-          <a href="tel:+2348000000000" className="font-bold text-[#132E1E] underline">
-            +234 800 000 0000 [Toll-Free]
-          </a>
-        </p>
+          {step === 'payment' && (
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-[#D5EEDC] bg-[#F4FAF5] p-4 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-[#132E1E]">
+                  <ShieldCheck className="w-5 h-5 text-[#2D6A4F]" />
+                  Account created
+                </div>
+                <p className="text-xs text-[#526056]">
+                  Your Premium plan is selected. Complete checkout to activate Premium features.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-2">
+                <h2 className="text-sm font-bold text-amber-950">Payment setup is not available yet</h2>
+                <p className="text-xs leading-relaxed text-amber-900">
+                  Premium pricing and usage limits are still being tested. This preview does not collect payment or activate Premium access.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (user) setUser({ ...user, selectedPlan: 'free' });
+                  navigate(redirectPath, { replace: true });
+                }}
+                className="w-full min-h-11 btn-golden rounded-xl text-xs font-bold"
+              >
+                Switch to Free and continue
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <LocationRequestModal

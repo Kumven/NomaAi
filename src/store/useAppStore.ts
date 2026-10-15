@@ -62,7 +62,8 @@ export const useAppStore = create<AppState>()(
           ? {
               ...user,
               farmState: PLATEAU_STATE.state,
-              farmLga: PLATEAU_STATE.lgas.includes(user.farmLga || '') ? user.farmLga : ''
+              farmLga: PLATEAU_STATE.lgas.includes(user.farmLga || '') ? user.farmLga : '',
+              selectedPlan: user.selectedPlan === 'premium' ? 'premium' : 'free'
             }
           : null;
         set({
@@ -89,7 +90,8 @@ export const useAppStore = create<AppState>()(
               farmState: PLATEAU_STATE.state,
               farmLga: PLATEAU_STATE.lgas.includes(persisted.user.farmLga || '')
                 ? persisted.user.farmLga
-                : ''
+                : '',
+              selectedPlan: persisted.user.selectedPlan === 'premium' ? 'premium' : 'free'
             }
           : null;
         const activeLga = PLATEAU_STATE.lgas.includes(persisted.activeLga || '')

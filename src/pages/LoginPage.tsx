@@ -244,15 +244,6 @@ export const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer Hotline matching Figma */}
-      <div className="py-4 text-center">
-        <p className="text-[11px] font-medium text-[#526056] flex items-center justify-center gap-1.5">
-          <span>📞 Farmer Hotline:</span>
-          <a href="tel:+2348000000000" className="font-bold text-[#132E1E] underline">
-            +234 800 000 0000 [Toll-Free]
-          </a>
-        </p>
-      </div>
     </div>
   );
 };

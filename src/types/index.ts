@@ -156,6 +156,7 @@ export interface UserProfile {
   email: string;
   farmState: string;
   farmLga?: string;
+  selectedPlan?: 'free' | 'premium';
   avatarUrl?: string;
   createdAt: string;
 }
@@ -165,4 +166,3 @@ export interface LocationCoordinates {
   longitude: number;
   accuracyMeters?: number;
 }
-
