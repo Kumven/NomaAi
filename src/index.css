@@ -1,8 +1,61 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
-    @apply bg-stone-50 text-stone-900 antialiased selection:bg-emerald-200 selection:text-emerald-900;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  :root {
+    --color-figma-bg: #EDF7EF;
+    --color-figma-primary: #F3A83B;
+    --color-figma-primary-hover: #E59828;
+    --color-figma-forest: #132E1E;
+    --color-figma-mint: #EAF7EE;
+    --color-figma-border: #D5EEDC;
   }
+
+  body {
+    background-color: #EDF7EF;
+    color: #1A261D;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, .font-serif-heading {
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  }
+}
+
+/* Custom Figma Design Helper Utilities */
+.btn-golden {
+  background-color: #F3A83B;
+  color: #171512;
+  font-weight: 700;
+  transition: all 0.15s ease-in-out;
+}
+.btn-golden:hover {
+  background-color: #E59828;
+}
+.btn-golden:active {
+  transform: scale(0.99);
+}
+
+.btn-mint {
+  background-color: #E2F5E7;
+  color: #132E1E;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
+}
+.btn-mint:hover {
+  background-color: #D5EEDC;
+}
+
+.card-figma {
+  background-color: #FFFFFF;
+  border-radius: 1.5rem;
+  border: 1px solid #D5EEDC;
+  box-shadow: 0 2px 8px -2px rgba(19, 46, 30, 0.05);
+}
+
+.badge-mint {
+  background-color: #EAF7EE;
+  color: #132E1E;
+  border: 1px solid #CDE8D4;
 }

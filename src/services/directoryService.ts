@@ -1,6 +1,6 @@
 import type { Consultant, AgroDealer } from '../types';
 
-export const MOCK_CONSULTANTS: Consultant[] = [
+export const MOCK_CONSULTANTS: Consultant[] = ([
   {
     id: 'c-1',
     name: 'Dr. Ibrahim Aliyu Bello',
@@ -121,9 +121,9 @@ export const MOCK_CONSULTANTS: Consultant[] = [
     consultationFee: '₦2,000 Community Rate',
     badge: 'Plateau Highland Specialist'
   }
-];
+] as Consultant[]).filter((consultant) => consultant.state === 'Plateau');
 
-export const MOCK_AGRO_DEALERS: AgroDealer[] = [
+export const MOCK_AGRO_DEALERS: AgroDealer[] = ([
   {
     id: 'd-1',
     businessName: 'Arewa Premier Seeds & Agro-Allied Ltd',
@@ -244,7 +244,7 @@ export const MOCK_AGRO_DEALERS: AgroDealer[] = [
     acceptsBankTransfer: true,
     openingHours: 'Mon - Sat: 7:00 AM - 6:00 PM'
   }
-];
+]).filter((dealer) => dealer.state === 'Plateau');
 
 export async function fetchDirectoryConsultants(
   stateFilter = '',
@@ -252,7 +252,7 @@ export async function fetchDirectoryConsultants(
 ): Promise<Consultant[]> {
   await new Promise((resolve) => setTimeout(resolve, 400));
   return MOCK_CONSULTANTS.filter((c) => {
-    const matchState = !stateFilter || c.state.toLowerCase() === stateFilter.toLowerCase();
+    const matchState = c.state === 'Plateau' && (!stateFilter || c.state.toLowerCase() === stateFilter.toLowerCase());
     const matchSpecialty = !specialtyFilter || c.specializations.some((s) => s.toLowerCase().includes(specialtyFilter.toLowerCase()));
     return matchState && matchSpecialty;
   });
@@ -264,7 +264,7 @@ export async function fetchDirectoryDealers(
 ): Promise<AgroDealer[]> {
   await new Promise((resolve) => setTimeout(resolve, 400));
   return MOCK_AGRO_DEALERS.filter((d) => {
-    const matchState = !stateFilter || d.state.toLowerCase() === stateFilter.toLowerCase();
+    const matchState = d.state === 'Plateau' && (!stateFilter || d.state.toLowerCase() === stateFilter.toLowerCase());
     const matchCategory = !categoryFilter || d.category === categoryFilter;
     return matchState && matchCategory;
   });

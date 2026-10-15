@@ -52,7 +52,7 @@ const INITIAL_SEEDED_HISTORY: DiagnosisResult[] = [
     ],
     farmerAudioScript: 'Cassava Mosaic disease confirmed. Rogue out affected stands immediately to save adjacent crops.',
     status: 'monitoring',
-    locationState: 'Oyo'
+    locationState: 'Plateau'
   },
   {
     id: 'seed-diag-2',
@@ -94,7 +94,7 @@ const INITIAL_SEEDED_HISTORY: DiagnosisResult[] = [
     ],
     farmerAudioScript: 'Fall Armyworm larvae identified in whorls. Wood ash and sand treatment applied successfully.',
     status: 'resolved',
-    locationState: 'Kaduna'
+    locationState: 'Plateau'
   }
 ];
 
@@ -104,7 +104,7 @@ export const useHistoryStore = create<HistoryState>()(
       diagnoses: INITIAL_SEEDED_HISTORY,
       addDiagnosis: (diagnosis) =>
         set((state) => ({
-          diagnoses: [diagnosis, ...state.diagnoses]
+          diagnoses: [{ ...diagnosis, locationState: 'Plateau' }, ...state.diagnoses]
         })),
       updateStatus: (id, status) =>
         set((state) => ({
@@ -117,7 +117,20 @@ export const useHistoryStore = create<HistoryState>()(
       clearAll: () => set({ diagnoses: [] })
     }),
     {
-      name: 'nomaai_farm_history'
+      name: 'nomaai_farm_history',
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState && typeof persistedState === 'object'
+          ? persistedState as Partial<HistoryState>
+          : {};
+        return {
+          ...currentState,
+          ...persisted,
+          diagnoses: (persisted.diagnoses || currentState.diagnoses).map((diagnosis) => ({
+            ...diagnosis,
+            locationState: 'Plateau'
+          }))
+        };
+      }
     }
   )
 );

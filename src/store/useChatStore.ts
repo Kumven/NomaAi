@@ -12,15 +12,15 @@ const INITIAL_WELCOME_MESSAGES: AdvisoryMessage[] = [
   {
     id: 'welcome-1',
     sender: 'assistant',
-    text: 'Sannu! Welcome to **Malam Noma AI Farm Advisory** 🌾\n\nI am your digital agricultural assistant for Nigerian farming conditions. You can ask me any question about:\n- 🌽 When to plant and how to space your crops\n- 🧪 Fertilizer schedules (NPK 15:15:15, Urea, Organic Manure)\n- 🐛 Identifying and managing pests (Fall Armyworm, Blights, Stem Borers)\n- 💰 Storage methods and grain market tips\n\n*Tap a quick question below or type/speak your question!*',
+    text: 'Sannu! Welcome to **Malam Noma AI Farm Advisory** 🌾\n\nI am your digital agricultural assistant for Plateau State farmers. You can ask me about:\n- 🌽 Planting seasons and crop spacing for Plateau farms\n- 🧪 Fertilizer schedules (NPK 15:15:15, Urea, Organic Manure)\n- 🐛 Identifying and managing pests (Fall Armyworm, Blights, Stem Borers)\n- 💰 Storage methods and local farm input tips\n\n*Tap a quick question below or type/speak your question!*',
     timestamp: '08:00 AM',
     topic: 'crops',
     quickReplies: [
-      'When is the best time to plant maize in Kaduna?',
+      'When is the best time to plant maize in Plateau State?',
       'How can I store yam tubers to prevent rot?',
-      'What are the recommended fertilizer rates in Nigeria?'
+      'What fertilizer rates are recommended for Plateau farms?'
     ],
-    disclaimer: 'NomaAi Advisory operates with Nigerian Agricultural dataset simulation.'
+    disclaimer: 'NomaAi Advisory operates with a Plateau State agricultural dataset simulation.'
   }
 ];
 
@@ -35,7 +35,19 @@ export const useChatStore = create<ChatState>()(
       clearChat: () => set({ messages: INITIAL_WELCOME_MESSAGES })
     }),
     {
-      name: 'nomaai_chat_records'
+      name: 'nomaai_chat_records',
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState && typeof persistedState === 'object'
+          ? persistedState as Partial<ChatState>
+          : {};
+        return {
+          ...currentState,
+          ...persisted,
+          messages: (persisted.messages || currentState.messages).map((message) =>
+            message.id === 'welcome-1' ? INITIAL_WELCOME_MESSAGES[0] : message
+          )
+        };
+      }
     }
   )
 );

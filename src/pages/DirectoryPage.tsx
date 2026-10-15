@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { Users, Store, Search, Filter, RefreshCw } from 'lucide-react';
+import { Users, Store, Search, MapPin, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useConsultants, useAgroDealers } from '../hooks/useDirectory';
 import { ConsultantCard } from '../components/directory/ConsultantCard';
 import { DealerCard } from '../components/directory/DealerCard';
-import { getAllSupportedStates } from '../services/weatherService';
 import type { Consultant, AgroDealer } from '../types';
 
 export const DirectoryPage: React.FC = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'consultants' | 'dealers'>('consultants');
-  const [selectedState, setSelectedState] = useState('');
+  const selectedState = 'Plateau';
   const [searchQuery, setSearchQuery] = useState('');
-
-  const states = getAllSupportedStates();
 
   const {
     data: consultants,
@@ -52,24 +49,24 @@ export const DirectoryPage: React.FC = () => {
     <div className="space-y-6 pb-12">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-          <Users className="w-6 h-6 text-emerald-700" />
+        <h1 className="text-2xl font-serif font-black text-[#132E1E] tracking-tight flex items-center gap-2">
+          <Users className="w-6 h-6 text-[#2D6A4F]" />
           <span>{t('directory.title')}</span>
         </h1>
-        <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#526056] leading-relaxed">
           {t('directory.subtitle')}
         </p>
       </div>
 
       {/* Tabs Switcher: Consultants vs Dealers */}
-      <div className="bg-white rounded-3xl p-1.5 border border-stone-200 shadow-xs flex gap-1">
+      <div className="bg-white rounded-3xl p-1.5 border border-[#D5EEDC] shadow-xs flex gap-1">
         <button
           type="button"
           onClick={() => setActiveTab('consultants')}
           className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition cursor-pointer ${
             activeTab === 'consultants'
-              ? 'bg-emerald-700 text-white shadow-xs'
-              : 'text-stone-600 hover:text-stone-900 hover:bg-stone-50'
+              ? 'bg-[#132E1E] text-white shadow-xs'
+              : 'text-[#526056] hover:text-[#132E1E] hover:bg-[#F4FAF5]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -81,8 +78,8 @@ export const DirectoryPage: React.FC = () => {
           onClick={() => setActiveTab('dealers')}
           className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition cursor-pointer ${
             activeTab === 'dealers'
-              ? 'bg-emerald-700 text-white shadow-xs'
-              : 'text-stone-600 hover:text-stone-900 hover:bg-stone-50'
+              ? 'bg-[#132E1E] text-white shadow-xs'
+              : 'text-[#526056] hover:text-[#132E1E] hover:bg-[#F4FAF5]'
           }`}
         >
           <Store className="w-4 h-4" />
@@ -90,8 +87,8 @@ export const DirectoryPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Search and State Filters */}
-      <div className="bg-white rounded-3xl p-4 border border-stone-200 shadow-xs space-y-3">
+      {/* Search and Plateau location */}
+      <div className="bg-white rounded-3xl p-4 border border-[#D5EEDC] shadow-xs space-y-3">
         {/* Search bar */}
         <div className="relative">
           <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -104,43 +101,13 @@ export const DirectoryPage: React.FC = () => {
                 ? 'Search by agronomist name, ADP, or crop (e.g. Maize, Cassava)...'
                 : 'Search by market, seed brand, fertilizer, or chemicals...'
             }
-            className="w-full pl-10 pr-4 py-2.5 bg-stone-50 rounded-2xl border border-stone-200 text-xs sm:text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs sm:text-sm text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
           />
         </div>
 
-        {/* State Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <div className="flex items-center gap-1 text-xs font-bold text-stone-400 shrink-0">
-            <Filter className="w-3.5 h-3.5" />
-            <span>State:</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setSelectedState('')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer ${
-              selectedState === ''
-                ? 'bg-emerald-700 text-white shadow-2xs'
-                : 'bg-stone-50 text-stone-600 border border-stone-200 hover:bg-stone-100'
-            }`}
-          >
-            All Nigeria
-          </button>
-
-          {states.map((st) => (
-            <button
-              key={st}
-              type="button"
-              onClick={() => setSelectedState(st)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer ${
-                selectedState === st
-                  ? 'bg-emerald-700 text-white shadow-2xs'
-                  : 'bg-stone-50 text-stone-600 border border-stone-200 hover:bg-stone-100'
-              }`}
-            >
-              {st}
-            </button>
-          ))}
+        <div className="inline-flex items-center gap-1.5 rounded-xl bg-[#EAF7EE] px-3 py-1.5 text-xs font-bold text-[#132E1E]">
+          <MapPin className="w-3.5 h-3.5 text-[#2D6A4F]" />
+          <span>Plateau State</span>
         </div>
       </div>
 
@@ -166,7 +133,6 @@ export const DirectoryPage: React.FC = () => {
             </p>
             <button
               onClick={() => {
-                setSelectedState('');
                 setSearchQuery('');
                 refetchConsultants();
               }}
@@ -197,7 +163,6 @@ export const DirectoryPage: React.FC = () => {
           </p>
           <button
             onClick={() => {
-              setSelectedState('');
               setSearchQuery('');
               refetchDealers();
             }}

@@ -56,15 +56,15 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({ selectedState }) => {
   return (
     <div className="space-y-5">
       {/* Current Conditions Card */}
-      <div className="bg-gradient-to-br from-emerald-800 via-emerald-900 to-stone-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+      <div className="bg-[#132E1E] text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-[#D5EEDC]">
         <div className="flex items-start justify-between">
           <div>
-            <div className="flex items-center gap-1.5 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 text-[#F3A83B] text-xs font-bold uppercase tracking-wider">
               <span>{weather.zone}</span>
               <span>•</span>
               <span>{weather.town}</span>
             </div>
-            <h2 className="text-3xl font-black mt-1 tracking-tight">
+            <h2 className="text-3xl font-serif font-black mt-1 tracking-tight text-white">
               {weather.state} State
             </h2>
             <p className="text-emerald-200 text-xs mt-0.5 font-medium">

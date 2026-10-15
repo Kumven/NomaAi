@@ -77,23 +77,23 @@ export const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({ result
   };
 
   const handleShareWhatsApp = () => {
-    const text = `*NomaAi Crop Diagnosis Report*\n🌾 *Crop:* ${result.cropName}\n🦠 *Issue:* ${result.diseaseName}\n⚠️ *Severity:* ${result.severity.toUpperCase()}\n\n*Immediate Action:* ${result.immediateAction}\n\n*Diagnosed via NomaAi Agricultural Advisory*`;
+    const text = `*NomaAi Crop Diagnosis Report*\n🌾 *Crop:* ${result.cropName}\n🦠 *Issue:* ${result.diseaseName}\n *Severity:* ${result.severity.toUpperCase()}\n\n*Immediate Action:* ${result.immediateAction}\n\n*Diagnosed via NomaAi Agricultural Advisory*`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="bg-white rounded-3xl border border-[#D5EEDC] shadow-lg overflow-hidden space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Top Header Card */}
-      <div className="bg-stone-900 text-white p-5 sm:p-6 space-y-3 relative overflow-hidden">
+      <div className="bg-[#132E1E] text-white p-5 sm:p-6 space-y-3 relative overflow-hidden">
         <div className="flex items-start justify-between gap-3 relative z-10">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-2xl">{result.cropIcon}</span>
-              <span className="text-xs uppercase font-bold tracking-wider text-emerald-400">
+              <span className="text-xs uppercase font-bold tracking-wider text-[#F3A83B]">
                 {result.cropName} • {result.locationState} State
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+            <h2 className="text-xl sm:text-2xl font-serif font-black tracking-tight text-white">
               {result.diseaseName}
             </h2>
             {localName && (
@@ -238,7 +238,7 @@ export const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({ result
             className={`w-full sm:flex-1 py-3 px-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
               isSaved
                 ? 'bg-stone-100 text-stone-600 border border-stone-200'
-                : 'bg-emerald-700 text-white hover:bg-emerald-800 shadow-md active:scale-95'
+                : 'btn-golden text-[#161513] hover:bg-[#E59828] shadow-md active:scale-95'
             }`}
           >
             {isSaved ? (

@@ -194,21 +194,21 @@ export const ChatInterface: React.FC = () => {
       </div>
 
       {/* Suggested Questions Ribbon */}
-      <div className="px-4 py-2 bg-stone-100/80 border-t border-stone-200">
+      <div className="px-4 py-2 bg-[#F4FAF5] border-t border-[#D5EEDC]">
         <QuickQuestionChips onSelectQuestion={(q) => handleSendMessage(q)} />
       </div>
 
       {/* Input Form Bar */}
-      <div className="bg-white p-3 border-t border-stone-200">
+      <div className="bg-white p-3 border-t border-[#D5EEDC]">
         <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
           {/* Voice Prompt Button */}
           <button
             type="button"
             onClick={() => setIsVoiceOpen(true)}
-            className="p-3 rounded-2xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-700 text-stone-600 transition flex items-center justify-center cursor-pointer shrink-0 border border-stone-200"
+            className="p-3 rounded-2xl bg-[#EAF7EE] hover:bg-[#D5EEDC] text-[#132E1E] transition flex items-center justify-center cursor-pointer shrink-0 border border-[#D5EEDC]"
             title="Ask by Voice"
           >
-            <Mic className="w-5 h-5 text-emerald-700" />
+            <Mic className="w-5 h-5 text-[#2D6A4F]" />
           </button>
 
           {/* Text Input */}
@@ -217,14 +217,14 @@ export const ChatInterface: React.FC = () => {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder={t('advisory.inputPlaceholder')}
-            className="flex-1 px-4 py-3 bg-stone-50 rounded-2xl border border-stone-200 text-xs sm:text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition"
+            className="flex-1 px-4 py-3 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs sm:text-sm text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
           />
 
-          {/* Send Button */}
+          {/* Send Button - Golden Figma Accent */}
           <button
             type="submit"
             disabled={!inputText.trim() || isLoading}
-            className="p-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 text-white transition flex items-center justify-center cursor-pointer shrink-0 shadow-sm"
+            className="p-3 rounded-2xl btn-golden hover:bg-[#E59828] disabled:opacity-40 text-[#161513] transition flex items-center justify-center cursor-pointer shrink-0 shadow-xs"
           >
             <Send className="w-5 h-5" />
           </button>

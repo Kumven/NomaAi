@@ -71,7 +71,7 @@ export const MockDataBadge: React.FC = () => {
                 <div>
                   <p className="font-semibold text-stone-900">Agro-Weather Suitability Engine</p>
                   <p className="text-stone-500 text-[11px]">
-                    Evaluates wind, precipitation, and moisture thresholds for 8 Nigerian farming belts using TanStack Query caching.
+                    Evaluates wind, precipitation, and moisture thresholds for Plateau State using TanStack Query caching.
                   </p>
                 </div>
               </div>

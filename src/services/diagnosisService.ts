@@ -231,7 +231,7 @@ export const MOCK_DIAGNOSES_KNOWLEDGE: Record<string, Partial<DiagnosisResult>> 
     ],
     chemicalPrecautions: 'Apply strictly in early morning before high wind. Observe minimum 7-day pre-harvest interval before picking ripe tomatoes for market.',
     preventionTips: [
-      'Plant blight-tolerant hybrid tomato varieties suitable for Nigerian rainy season (e.g. Platinum F1, Cobra F1).',
+      'Plant blight-tolerant hybrid tomato varieties suited to Plateau State rainy-season conditions (e.g. Platinum F1, Cobra F1).',
       'Avoid planting tomatoes right next to Irish potato beds.',
       'Stake tomato plants off the ground with bamboo stakes and raffia twine.'
     ],
@@ -331,7 +331,7 @@ export const MOCK_DIAGNOSES_KNOWLEDGE: Record<string, Partial<DiagnosisResult>> 
     },
     confidence: 98,
     severity: 'critical',
-    summary: 'Aggressive fungal pod rot spreading during rainy, humid months across southwestern Nigerian cocoa groves. Can wipe out 80% of harvest if untended.',
+    summary: 'Aggressive fungal pod rot that spreads during rainy, humid conditions in cocoa groves. Remove infected pods promptly to limit crop loss.',
     immediateAction: 'Harvest and bury or burn all blackened and mummified pods from tree trunks and branches immediately.',
     organicRemedies: [
       'Prune excess shade tree branches and chupons to allow sunlight onto cocoa tree trunks.',
@@ -354,7 +354,7 @@ export async function simulateDiagnosisAnalysis(
   imagePreviewUrl: string,
   symptoms: string[] = [],
   imageStats?: DiagnosisResult['imageStats'],
-  locationState = 'Kano'
+  locationState = 'Plateau'
 ): Promise<DiagnosisResult> {
   // Realistic simulation latency (1000-1400ms) to allow realistic UX feedback
   await new Promise((resolve) => setTimeout(resolve, 1100));

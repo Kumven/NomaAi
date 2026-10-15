@@ -148,3 +148,21 @@ export interface MockSystemStatus {
   source: string;
   version: string;
 }
+
+export interface UserProfile {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  farmState: string;
+  farmLga?: string;
+  avatarUrl?: string;
+  createdAt: string;
+}
+
+export interface LocationCoordinates {
+  latitude: number;
+  longitude: number;
+  accuracyMeters?: number;
+}
+

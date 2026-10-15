@@ -62,7 +62,7 @@ export const VoicePromptModal: React.FC<VoicePromptModalProps> = ({
     } else {
       // Fallback simulated voice prompt for demo
       const timer = setTimeout(() => {
-        setTranscript('How do I know if my maize is ready for harvesting, and what is the current market price in Kano?');
+        setTranscript('How do I know if my maize is ready for harvesting, and what is the current market price in Plateau?');
         setIsListening(false);
       }, 2500);
 
@@ -163,7 +163,7 @@ export const VoicePromptModal: React.FC<VoicePromptModalProps> = ({
           <p className="text-sm font-semibold text-stone-900 mt-1 italic">
             {transcript || (
               <span className="text-stone-400 not-italic">
-                "E.g., Which fertilizer is best for yam in Benue?"
+                "E.g., Which fertilizer is best for yam in Plateau?"
               </span>
             )}
           </p>

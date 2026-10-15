@@ -15,38 +15,38 @@ export const BottomNav: React.FC = () => {
     },
     {
       to: '/diagnose',
-      label: t('nav.diagnose'),
+      label: 'Scan',
       icon: Camera,
       highlight: true
     },
     {
       to: '/advisory',
-      label: t('nav.advisory'),
+      label: 'Advisory',
       icon: MessageSquareText,
       highlight: false
     },
     {
       to: '/weather',
-      label: t('nav.weather'),
+      label: 'Weather',
       icon: CloudSun,
       highlight: false
     },
     {
       to: '/history',
-      label: t('nav.history'),
+      label: 'Library',
       icon: History,
       highlight: false
     },
     {
       to: '/directory',
-      label: t('nav.directory'),
+      label: 'Experts',
       icon: Users,
       highlight: false
     }
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EEDC] shadow-lg">
       <div className="max-w-md mx-auto px-2 py-1.5 flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -67,15 +67,15 @@ export const BottomNav: React.FC = () => {
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform ${
                         isActive
-                          ? 'bg-emerald-600 text-white ring-4 ring-emerald-100 shadow-emerald-600/30'
-                          : 'bg-emerald-700 text-white ring-2 ring-white shadow-emerald-700/20'
+                          ? 'bg-[#F3A83B] text-[#161513] ring-4 ring-[#F3A83B]/30 shadow-[#F3A83B]/40'
+                          : 'bg-[#F3A83B] text-[#161513] ring-2 ring-white shadow-[#F3A83B]/30'
                       }`}
                     >
-                      <Icon className="w-6 h-6 stroke-[2.2]" />
+                      <Icon className="w-6 h-6 stroke-[2.4]" />
                     </div>
                     <span
                       className={`text-[10px] font-bold mt-1 max-w-[64px] truncate text-center ${
-                        isActive ? 'text-emerald-800' : 'text-stone-600'
+                        isActive ? 'text-[#132E1E]' : 'text-[#526056]'
                       }`}
                     >
                       {item.label}
@@ -91,10 +91,10 @@ export const BottomNav: React.FC = () => {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center py-1 px-1.5 rounded-lg transition min-w-[50px] ${
+                `flex flex-col items-center justify-center py-1 px-1.5 rounded-lg transition min-w-[48px] ${
                   isActive
-                    ? 'text-emerald-800 font-bold'
-                    : 'text-stone-500 hover:text-stone-900 font-medium'
+                    ? 'text-[#132E1E] font-bold'
+                    : 'text-[#64746B] hover:text-[#132E1E] font-medium'
                 }`
               }
             >
@@ -102,14 +102,14 @@ export const BottomNav: React.FC = () => {
                 <>
                   <Icon
                     className={`w-5 h-5 mb-0.5 transition-colors ${
-                      isActive ? 'text-emerald-700 stroke-[2.5]' : 'stroke-[1.8]'
+                      isActive ? 'text-[#2D6A4F] stroke-[2.5]' : 'stroke-[1.8]'
                     }`}
                   />
                   <span className="text-[10px] leading-tight max-w-[56px] truncate text-center">
                     {item.label}
                   </span>
                   {isActive && (
-                    <span className="w-1 h-1 rounded-full bg-emerald-600 mt-0.5" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#F3A83B] mt-0.5" />
                   )}
                 </>
               )}

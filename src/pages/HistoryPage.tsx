@@ -25,18 +25,18 @@ export const HistoryPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-            <History className="w-6 h-6 text-emerald-700" />
+          <h1 className="text-2xl font-serif font-black text-[#132E1E] tracking-tight flex items-center gap-2">
+            <History className="w-6 h-6 text-[#2D6A4F]" />
             <span>{t('history.title')}</span>
           </h1>
-          <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#526056] leading-relaxed">
             {t('history.subtitle')}
           </p>
         </div>
 
         <Link
           to="/diagnose"
-          className="px-3.5 py-2 rounded-xl bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs hover:bg-emerald-800 transition cursor-pointer shrink-0"
+          className="px-3.5 py-2 rounded-xl btn-golden text-[#161513] font-bold text-xs flex items-center gap-1.5 shadow-xs hover:bg-[#E59828] transition cursor-pointer shrink-0"
         >
           <PlusCircle className="w-4 h-4" />
           <span className="hidden sm:inline">New Check</span>
@@ -44,7 +44,7 @@ export const HistoryPage: React.FC = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-white rounded-3xl p-3 border border-stone-200 shadow-xs flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+      <div className="bg-white rounded-3xl p-3 border border-[#D5EEDC] shadow-xs flex items-center gap-1.5 overflow-x-auto scrollbar-none">
         <div className="flex items-center gap-1 text-xs font-bold text-stone-400 px-2 shrink-0">
           <Filter className="w-3.5 h-3.5" />
           <span>Status:</span>
@@ -55,8 +55,8 @@ export const HistoryPage: React.FC = () => {
           onClick={() => setStatusFilter('all')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 cursor-pointer ${
             statusFilter === 'all'
-              ? 'bg-emerald-700 text-white shadow-2xs'
-              : 'bg-stone-50 hover:bg-stone-100 text-stone-700'
+              ? 'bg-[#132E1E] text-white shadow-2xs'
+              : 'bg-[#F4FAF5] hover:bg-[#EAF7EE] text-[#132E1E]'
           }`}
         >
           All ({diagnoses.length})

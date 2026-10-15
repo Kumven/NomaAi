@@ -100,11 +100,11 @@ export const DiagnosePage: React.FC = () => {
     <div className="space-y-6 pb-12">
       {/* Header Info */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-          <Camera className="w-6 h-6 text-emerald-700" />
+        <h1 className="text-2xl font-serif font-black text-[#132E1E] tracking-tight flex items-center gap-2">
+          <Camera className="w-6 h-6 text-[#2D6A4F]" />
           <span>{t('diagnose.title')}</span>
         </h1>
-        <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#526056] leading-relaxed">
           {t('diagnose.subtitle')}
         </p>
       </div>
@@ -118,7 +118,7 @@ export const DiagnosePage: React.FC = () => {
             <button
               type="button"
               onClick={handleReset}
-              className="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition"
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#EAF7EE] text-[#132E1E] border border-[#D5EEDC] text-xs font-bold flex items-center gap-1.5 cursor-pointer transition shadow-xs"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Diagnose Another Crop</span>
@@ -130,10 +130,10 @@ export const DiagnosePage: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {/* Step 1: Select Crop */}
-          <div className="bg-white rounded-3xl p-5 border border-stone-200 shadow-xs space-y-3">
+          <div className="bg-white rounded-3xl p-5 border border-[#D5EEDC] shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-900 inline-flex items-center justify-center text-[11px] font-bold">1</span>
+              <span className="text-xs font-black uppercase tracking-wider text-[#132E1E] flex items-center gap-1">
+                <span className="w-5 h-5 rounded-full bg-[#EAF7EE] text-[#132E1E] inline-flex items-center justify-center text-[11px] font-bold border border-[#D5EEDC]">1</span>
                 <span>{t('diagnose.selectCrop')}</span>
               </span>
               <span className="text-[11px] text-stone-400">8 Key Nigerian Crops</span>
@@ -146,10 +146,10 @@ export const DiagnosePage: React.FC = () => {
           </div>
 
           {/* Step 2: What Symptoms Do You See? */}
-          <div className="bg-white rounded-3xl p-5 border border-stone-200 shadow-xs space-y-3">
+          <div className="bg-white rounded-3xl p-5 border border-[#D5EEDC] shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-900 inline-flex items-center justify-center text-[11px] font-bold">2</span>
+              <span className="text-xs font-black uppercase tracking-wider text-[#132E1E] flex items-center gap-1">
+                <span className="w-5 h-5 rounded-full bg-[#EAF7EE] text-[#132E1E] inline-flex items-center justify-center text-[11px] font-bold border border-[#D5EEDC]">2</span>
                 <span>{t('diagnose.chooseSymptoms')}</span>
               </span>
               <span className="text-[11px] text-stone-400">Tap to highlight</span>
@@ -162,13 +162,13 @@ export const DiagnosePage: React.FC = () => {
           </div>
 
           {/* Step 3: Photo Capture & Compression */}
-          <div className="bg-white rounded-3xl p-5 border border-stone-200 shadow-xs space-y-3">
+          <div className="bg-white rounded-3xl p-5 border border-[#D5EEDC] shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-900 inline-flex items-center justify-center text-[11px] font-bold">3</span>
+              <span className="text-xs font-black uppercase tracking-wider text-[#132E1E] flex items-center gap-1">
+                <span className="w-5 h-5 rounded-full bg-[#EAF7EE] text-[#132E1E] inline-flex items-center justify-center text-[11px] font-bold border border-[#D5EEDC]">3</span>
                 <span>Upload or Snap Photo</span>
               </span>
-              <span className="text-[11px] text-stone-400">Automatic Browser Compression</span>
+              <span className="text-[11px] text-[#2D6A4F] font-semibold">Automatic In-Browser Compression</span>
             </div>
 
             <ImageUploader
@@ -187,25 +187,25 @@ export const DiagnosePage: React.FC = () => {
             </div>
           )}
 
-          {/* Submit Action Button */}
+          {/* Submit Action Button - Styled with Golden Figma Palette */}
           <button
             type="button"
             disabled={isAnalyzing}
             onClick={handleRunDiagnosis}
-            className={`w-full py-4 px-6 rounded-2xl font-black text-base text-white shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`w-full py-4 px-6 rounded-2xl font-black text-base shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer ${
               isAnalyzing
-                ? 'bg-emerald-800 opacity-80 cursor-not-allowed'
-                : 'bg-emerald-700 hover:bg-emerald-800 active:scale-98 shadow-emerald-700/20'
+                ? 'bg-[#E59828] opacity-80 cursor-not-allowed text-[#161513]'
+                : 'btn-golden text-[#161513] hover:bg-[#E59828] active:scale-98 shadow-[#F3A83B]/20'
             }`}
           >
             {isAnalyzing ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-[#161513] border-t-transparent rounded-full animate-spin" />
                 <span>{t('diagnose.analyzing')}</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5 text-amber-300" />
+                <Sparkles className="w-5 h-5 text-[#161513]" />
                 <span>{t('diagnose.runDiagnosis')}</span>
               </>
             )}

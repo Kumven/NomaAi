@@ -1,6 +1,6 @@
 import type { WeatherAdvisoryData } from '../types';
 
-export const NIGERIAN_AGRO_WEATHER: Record<string, WeatherAdvisoryData> = {
+const NIGERIAN_AGRO_WEATHER: Record<string, WeatherAdvisoryData> = {
   Kano: {
     state: 'Kano',
     town: 'Kano Urban / Dawanau Hub',
@@ -227,17 +227,7 @@ export const NIGERIAN_AGRO_WEATHER: Record<string, WeatherAdvisoryData> = {
   }
 };
 
-export async function fetchWeatherAdvisory(stateName: string): Promise<WeatherAdvisoryData> {
-  // Realistic simulated network latency for TanStack Query
+export async function fetchWeatherAdvisory(_stateName: string): Promise<WeatherAdvisoryData> {
   await new Promise((resolve) => setTimeout(resolve, 600));
-
-  if (NIGERIAN_AGRO_WEATHER[stateName]) {
-    return NIGERIAN_AGRO_WEATHER[stateName];
-  }
-  // Fallback to Kano if not found
-  return NIGERIAN_AGRO_WEATHER.Kano;
-}
-
-export function getAllSupportedStates(): string[] {
-  return Object.keys(NIGERIAN_AGRO_WEATHER);
+  return NIGERIAN_AGRO_WEATHER.Plateau;
 }
