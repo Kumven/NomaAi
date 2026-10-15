@@ -121,7 +121,7 @@ export const MOCK_CONSULTANTS: Consultant[] = ([
     consultationFee: '₦2,000 Community Rate',
     badge: 'Plateau Highland Specialist'
   }
-] as Consultant[]).filter((consultant) => consultant.state === 'Plateau');
+]).filter((consultant) => consultant.state === 'Plateau');
 
 export const MOCK_AGRO_DEALERS: AgroDealer[] = ([
   {

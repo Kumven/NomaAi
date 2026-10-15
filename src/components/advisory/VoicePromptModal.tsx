@@ -158,7 +158,7 @@ export const VoicePromptModal: React.FC<VoicePromptModalProps> = ({
         </div>
 
         {/* Live Transcript Display Box */}
-        <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 min-h-[90px] text-left flex flex-col justify-between">
+        <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 min-h-22.5 text-left flex flex-col justify-between">
           <span className="text-[10px] uppercase font-bold text-stone-400">Your Question:</span>
           <p className="text-sm font-semibold text-stone-900 mt-1 italic">
             {transcript || (
