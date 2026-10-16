@@ -14,7 +14,7 @@ export const DiagnosePage: React.FC = () => {
   const { t } = useTranslation();
   const { activeState } = useAppStore();
 
-  const [selectedCropId, setSelectedCropId] = useState('cassava');
+  const [selectedCropId, setSelectedCropId] = useState('maize');
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [compressionStats, setCompressionStats] = useState<CompressionResult | null>(null);
@@ -136,7 +136,7 @@ export const DiagnosePage: React.FC = () => {
                 <span className="w-5 h-5 rounded-full bg-[#EAF7EE] text-[#132E1E] inline-flex items-center justify-center text-[11px] font-bold border border-[#D5EEDC]">1</span>
                 <span>{t('diagnose.selectCrop')}</span>
               </span>
-              <span className="text-[11px] text-stone-400">8 Key Nigerian Crops</span>
+              <span className="text-[11px] text-stone-400">2 Key Nigerian Crops</span>
             </div>
 
             <CropSelector

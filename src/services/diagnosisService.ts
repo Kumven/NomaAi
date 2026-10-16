@@ -2,14 +2,6 @@ import type { CropInfo, DiagnosisResult, SeverityLevel } from '../types';
 
 export const NIGERIAN_CROPS: CropInfo[] = [
   {
-    id: 'cassava',
-    name: 'Cassava',
-    localNames: { ha: 'Rogo', yo: 'Gbaguda / Ege', ig: 'Akpu / Ji Abana', pcm: 'Cassava' },
-    category: 'tuber',
-    icon: '🥔',
-    commonDiseases: ['Cassava Mosaic Disease (CMD)', 'Cassava Brown Streak', 'Cassava Bacterial Blight', 'Green Mite Infestation']
-  },
-  {
     id: 'maize',
     name: 'Maize / Corn',
     localNames: { ha: 'Masara', yo: 'Agbado', ig: 'Ọka', pcm: 'Corn' },
@@ -18,52 +10,12 @@ export const NIGERIAN_CROPS: CropInfo[] = [
     commonDiseases: ['Fall Armyworm (FAW)', 'Maize Streak Virus', 'Stem Borer', 'Northern Corn Leaf Blight']
   },
   {
-    id: 'yam',
-    name: 'Yam',
-    localNames: { ha: 'Doya', yo: 'Isu', ig: 'Ji', pcm: 'Yam' },
-    category: 'tuber',
-    icon: '🍠',
-    commonDiseases: ['Yam Anthracnose (Die-back)', 'Yam Mosaic Virus', 'Tuber Soft Rot', 'Nematode Galling']
-  },
-  {
     id: 'tomato',
     name: 'Tomato',
     localNames: { ha: 'Tumatir', yo: 'Tọmato', ig: 'Tomato', pcm: 'Tomato' },
     category: 'vegetable',
     icon: '🍅',
     commonDiseases: ['Tomato Late Blight', 'Bacterial Wilt', 'Tuta Absoluta (Leaf Miner)', 'Tomato Yellow Leaf Curl']
-  },
-  {
-    id: 'rice',
-    name: 'Rice',
-    localNames: { ha: 'Shinkafa', yo: 'Resi', ig: 'Osikapa', pcm: 'Rice' },
-    category: 'cereal',
-    icon: '🌾',
-    commonDiseases: ['Rice Blast (Pyricularia)', 'Bacterial Leaf Blight', 'Brown Spot Disease', 'African Rice Gall Midge']
-  },
-  {
-    id: 'pepper',
-    name: 'Pepper (Habanero / Tatashe)',
-    localNames: { ha: 'Barkono / Tattasai', yo: 'Ata Rodo / Sombo', ig: 'Ose', pcm: 'Pepper' },
-    category: 'vegetable',
-    icon: '🌶️',
-    commonDiseases: ['Pepper Leaf Curl Virus', 'Anthracnose Fruit Rot', 'Bacterial Spot', 'Aphid Infestation']
-  },
-  {
-    id: 'cowpea',
-    name: 'Cowpea / Beans',
-    localNames: { ha: 'Wake', yo: 'Ẹwa', ig: 'Agwa', pcm: 'Beans' },
-    category: 'legume',
-    icon: '🫘',
-    commonDiseases: ['Maruca Pod Borer', 'Cowpea Aphid Mosaic Virus', 'Anthracnose', 'Cercospora Leaf Spot']
-  },
-  {
-    id: 'cocoa',
-    name: 'Cocoa',
-    localNames: { ha: 'Koko', yo: 'Koko', ig: 'Koko', pcm: 'Cocoa' },
-    category: 'cash_crop',
-    icon: '🍫',
-    commonDiseases: ['Black Pod Disease (Phytophthora)', 'Cocoa Swollen Shoot Virus', 'Mirid / Capsid Bug Damage']
   }
 ];
 
@@ -78,15 +30,6 @@ export interface SampleCase {
 }
 
 export const SAMPLE_CROP_CASES: SampleCase[] = [
-  {
-    id: 'sample-cassava-cmd',
-    cropId: 'cassava',
-    title: 'Cassava Leaves with Yellow Distortions',
-    diseaseName: 'Cassava Mosaic Disease (CMD)',
-    imageUrl: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=800&q=80',
-    thumbnailDesc: 'Yellow mosaic patterns & distorted leaf blades',
-    symptoms: ['Curled leaves', 'Yellow and pale patches', 'Stunted stem nodes']
-  },
   {
     id: 'sample-maize-faw',
     cropId: 'maize',
@@ -104,15 +47,6 @@ export const SAMPLE_CROP_CASES: SampleCase[] = [
     imageUrl: 'https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=800&q=80',
     thumbnailDesc: 'Dark irregular water-soaked spots with pale margins',
     symptoms: ['Dark brown spots on leaves', 'Dying foliage', 'Fruit rot']
-  },
-  {
-    id: 'sample-yam-anthracnose',
-    cropId: 'yam',
-    title: 'Yam Foliage with Scorched Black Spots',
-    diseaseName: 'Yam Anthracnose / Die-back (Colletotrichum gloeosporioides)',
-    imageUrl: 'https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80',
-    thumbnailDesc: 'Pinpoint black spots coalescing into scorch appearance',
-    symptoms: ['Black leaf spots', 'Vines drying out', 'Premature leaf drop']
   }
 ];
 
@@ -319,33 +253,6 @@ export const MOCK_DIAGNOSES_KNOWLEDGE: Record<string, Partial<DiagnosisResult>> 
       'Timely early planting at the onset of rain.'
     ],
     farmerAudioScript: 'Maruca caterpillar is feeding on your beans flowers. Spray Neem extract or approved insecticide early morning when buds open to protect the bean pods.'
-  },
-  cocoa: {
-    diseaseName: 'Cocoa Black Pod Disease',
-    scientificName: 'Phytophthora megakarya',
-    localDiseaseName: {
-      ha: 'Cutar Bakin Koko',
-      yo: 'Àrùn Koko Dúdú (Black Pod)',
-      ig: 'Ọrịa Na-eme Koko Oji',
-      pcm: 'Cocoa Black Pod Rot'
-    },
-    confidence: 98,
-    severity: 'critical',
-    summary: 'Aggressive fungal pod rot that spreads during rainy, humid conditions in cocoa groves. Remove infected pods promptly to limit crop loss.',
-    immediateAction: 'Harvest and bury or burn all blackened and mummified pods from tree trunks and branches immediately.',
-    organicRemedies: [
-      'Prune excess shade tree branches and chupons to allow sunlight onto cocoa tree trunks.',
-      'Improve grove drainage to reduce dampness.'
-    ],
-    chemicalRemedies: [
-      'Foliar spray with Copper oxide (Nordox 75 WG) or Metalaxyl + Copper hydroxide every 21 days during the heavy rain season.'
-    ],
-    chemicalPrecautions: 'Ensure full coverage of pods and lower trunk bark; do not contaminate streams.',
-    preventionTips: [
-      'Frequent sanitary harvesting every 7 to 10 days.',
-      'Plant disease-resistant CRIN (Cocoa Research Institute of Nigeria) hybrid varieties.'
-    ],
-    farmerAudioScript: 'Black pod disease has hit your cocoa. Remove all black pods from the trees today and prune thick branches to let sunlight shine through the trees.'
   }
 };
 

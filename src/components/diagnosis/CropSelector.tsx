@@ -17,7 +17,7 @@ export const CropSelector: React.FC<CropSelectorProps> = ({
 
   return (
     <div className="space-y-2">
-      <div className="grid grid-cols-4 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {NIGERIAN_CROPS.map((crop) => {
           const isSelected = selectedCropId === crop.id;
           const localName =
