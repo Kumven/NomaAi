@@ -267,7 +267,7 @@ export async function simulateDiagnosisAnalysis(
   await new Promise((resolve) => setTimeout(resolve, 1100));
 
   const crop = NIGERIAN_CROPS.find((c) => c.id === cropId) || NIGERIAN_CROPS[0];
-  const knowledge = MOCK_DIAGNOSES_KNOWLEDGE[cropId] || MOCK_DIAGNOSES_KNOWLEDGE.cassava;
+  const knowledge = MOCK_DIAGNOSES_KNOWLEDGE[crop.id] || MOCK_DIAGNOSES_KNOWLEDGE.maize;
 
   const result: DiagnosisResult = {
     id: `diag-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
