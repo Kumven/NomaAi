@@ -21,4 +21,4 @@ guidance in the farmer's preferred language.
 ### To decide
 - Free token allowance and plan prices
 - How partners (consultants, dealers) are verified and paid
-- Who moderates the communities
+- Who moderates the communitie
