@@ -41,7 +41,7 @@ export const HomePage: React.FC = () => {
           </span>
 
           <h1 className="text-3xl sm:text-4xl font-serif font-black text-[#132E1E] tracking-tight">
-            Instant disease detection
+            Instant  <br /> disease detection
           </h1>
 
           <p className="text-xs sm:text-sm text-[#526056] max-w-sm mx-auto">
