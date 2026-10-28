@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Eye, EyeOff, ShieldCheck, Check } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Check } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
+import { login } from '../services/api';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -10,47 +11,26 @@ export const LoginPage: React.FC = () => {
   const redirectPath =
     (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/';
 
-  const [identifier, setIdentifier] = useState('08031234567');
-  const [password, setPassword] = useState('••••••••');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [countryCode, setCountryCode] = useState('+234');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage('');
 
-    setTimeout(() => {
-      setUser({
-        id: 'usr-1',
-        fullName: 'Aminu Bello',
-        phone: `${countryCode} ${identifier}`,
-        email: identifier.includes('@') ? identifier : 'aminu.bello@farm.ng',
-        farmState: 'Plateau',
-        farmLga: 'Jos North',
-        createdAt: new Date().toISOString()
-      });
-      setIsLoading(false);
+    try {
+      const authenticatedUser = await login(email.trim(), password);
+      setUser(authenticatedUser);
       navigate(redirectPath, { replace: true });
-    }, 700);
-  };
-
-  const handleGoogleSignIn = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setUser({
-        id: 'usr-google',
-        fullName: 'Aminu Bello',
-        phone: '+234 803 123 4567',
-        email: 'aminu.bello@gmail.com',
-        farmState: 'Plateau',
-        farmLga: 'Jos North',
-        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-        createdAt: new Date().toISOString()
-      });
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Could not sign in.');
+    } finally {
       setIsLoading(false);
-      navigate(redirectPath, { replace: true });
-    }, 600);
+    }
   };
 
   return (
@@ -113,40 +93,26 @@ export const LoginPage: React.FC = () => {
 
           {/* Sign In Form */}
           <form onSubmit={handleSignIn} className="space-y-4">
-            {/* Email or Phone with country code & SMS badge */}
+            {errorMessage && (
+              <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800">
+                {errorMessage}
+              </p>
+            )}
+            {/* Email */}
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-[#132E1E]">
-                  Email or phone number
-                </label>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#2D6A4F] bg-[#EAF7EE] px-2 py-0.5 rounded-full border border-[#D5EEDC]">
-                  <ShieldCheck className="w-3 h-3 text-[#2D6A4F]" />
-                  <span>SMS verified</span>
-                </span>
-              </div>
-
-              <div className="flex gap-2">
-                <div className="relative">
-                  <select
-                    value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
-                    className="h-11 px-2.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs font-bold text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] cursor-pointer"
-                  >
-                    <option value="+234">🇳🇬 +234 (NG)</option>
-                    <option value="+233">🇬🇭 +233 (GH)</option>
-                    <option value="+254">🇰🇪 +254 (KE)</option>
-                  </select>
-                </div>
-
-                <input
-                  type="text"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="e.g. 0801 234 5678 or farmer@..."
-                  required
-                  className="flex-1 h-11 px-3.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs text-[#132E1E] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
-                />
-              </div>
+              <label htmlFor="login-email" className="text-xs font-bold text-[#132E1E]">
+                Email address
+              </label>
+              <input
+                id="login-email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="farmer@example.com"
+                required
+                className="w-full h-11 px-3.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs text-[#132E1E] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
+              />
             </div>
 
             {/* Password */}
@@ -155,7 +121,7 @@ export const LoginPage: React.FC = () => {
                 <label className="text-xs font-bold text-[#132E1E]">Password</label>
                 <button
                   type="button"
-                  onClick={() => alert('Password reset SMS will be sent to your registered Nigerian phone number.')}
+                  onClick={() => setErrorMessage('Password reset is not available yet.')}
                   className="text-xs font-bold text-[#2D6A4F] hover:underline cursor-pointer"
                 >
                   Forgot password?
@@ -209,7 +175,7 @@ export const LoginPage: React.FC = () => {
           {/* Secondary Google Button */}
           <button
             type="button"
-            onClick={handleGoogleSignIn}
+            onClick={() => setErrorMessage('Google sign-in is not configured yet.')}
             className="w-full h-11 bg-[#E2F5E7] hover:bg-[#D5EEDC] text-[#132E1E] rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer border border-[#CDE8D4]"
           >
             {/* Google colored G logo */}

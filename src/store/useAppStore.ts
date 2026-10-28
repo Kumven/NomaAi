@@ -58,7 +58,7 @@ export const useAppStore = create<AppState>()(
       toggleMockMode: () => set((state) => ({ isMockActive: !state.isMockActive })),
       setFontSize: (size) => set({ fontSize: size }),
       setUser: (user) => {
-        const plateauUser = user
+        const plateauUser: UserProfile | null = user
           ? {
               ...user,
               farmState: PLATEAU_STATE.state,
@@ -84,7 +84,7 @@ export const useAppStore = create<AppState>()(
         const persisted = persistedState && typeof persistedState === 'object'
           ? persistedState as Partial<AppState>
           : {};
-        const user = persisted.user
+        const user: UserProfile | null = persisted.user
           ? {
               ...persisted.user,
               farmState: PLATEAU_STATE.state,

@@ -49,7 +49,7 @@ export const MockDataBadge: React.FC = () => {
                 <span>Simulated Backend Integration</span>
               </div>
               <p>
-                In compliance with project specifications, NomaAi is built <strong>frontend-first</strong>. All AI crop diagnosis classifications, agricultural meteorological alerts, and expert directories operate through an abstracted service layer (`src/services/`) with realistic Nigerian agro-data.
+                Signup and login use the Express API. AI crop diagnosis, agricultural weather alerts, and expert directory data are still frontend demos backed by realistic Nigerian agro-data.
               </p>
             </div>
 

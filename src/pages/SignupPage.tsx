@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { PLATEAU_STATE, requestBrowserLocation } from '../services/locationService';
+import { signup } from '../services/api';
 import { LocationRequestModal } from '../components/common/LocationRequestModal';
 
 export const SignupPage: React.FC = () => {
@@ -22,18 +23,19 @@ export const SignupPage: React.FC = () => {
   const redirectPath =
     (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/';
 
-  const [fullName, setFullName] = useState('Aminu Bello');
-  const [phoneNumber, setPhoneNumber] = useState('08031234567');
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState('+234');
-  const [email, setEmail] = useState('aminu.bello@example.com');
+  const [email, setEmail] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium'>('free');
   const [step, setStep] = useState<SignupStep>('plan');
   const [farmLga, setFarmLga] = useState(
     PLATEAU_STATE.lgas.includes(activeLga || '') ? activeLga || '' : ''
   );
-  const [password, setPassword] = useState('••••••••');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isDetectingGps, setIsDetectingGps] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
@@ -51,28 +53,32 @@ export const SignupPage: React.FC = () => {
     }
   };
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage('');
 
-    setTimeout(() => {
-      setUser({
-        id: `usr-${Date.now()}`,
+    try {
+      const newUser = await signup({
         fullName,
-        phone: `${countryCode} ${phoneNumber}`,
+        phone: `${countryCode}${phoneNumber.replace(/\D/g, '').replace(/^0/, '')}`,
         email,
+        password,
         farmState: PLATEAU_STATE.state,
         farmLga,
-        selectedPlan,
-        createdAt: new Date().toISOString()
+        selectedPlan
       });
-      setIsLoading(false);
+      setUser(newUser);
       if (selectedPlan === 'premium') {
         setStep('payment');
       } else {
         navigate(redirectPath, { replace: true });
       }
-    }, 700);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Could not create your account.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -195,6 +201,11 @@ export const SignupPage: React.FC = () => {
             </button>
           </div>
           <form onSubmit={handleSignUp} className="space-y-3.5">
+            {errorMessage && (
+              <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800">
+                {errorMessage}
+              </p>
+            )}
             {/* Full Name */}
             <div className="space-y-1">
               <label className="text-xs font-bold text-[#132E1E]">Full Name</label>
@@ -299,6 +310,7 @@ export const SignupPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a secure password"
+                  minLength={8}
                   required
                   className="w-full h-11 pl-3.5 pr-10 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
                 />
