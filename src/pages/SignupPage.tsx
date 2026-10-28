@@ -28,7 +28,9 @@ export const SignupPage: React.FC = () => {
   const [countryCode, setCountryCode] = useState('+234');
   const [email, setEmail] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium'>('free');
-  const [step, setStep] = useState<SignupStep>('plan');
+  const [step, setStep] = useState<SignupStep>(() =>
+    new URLSearchParams(location.search).get('step') === 'account' ? 'account' : 'plan'
+  );
   const [farmLga, setFarmLga] = useState(
     PLATEAU_STATE.lgas.includes(activeLga || '') ? activeLga || '' : ''
   );

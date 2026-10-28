@@ -8,37 +8,37 @@ export const BottomNav: React.FC = () => {
 
   const navItems = [
     {
-      to: '/',
+      to: '/signup?step=account',
       label: t('nav.home'),
       icon: Home,
       highlight: false
     },
     {
-      to: '/diagnose',
+      to: '/signup?step=account',
       label: 'Scan',
       icon: Camera,
       highlight: true
     },
     {
-      to: '/advisory',
+      to: '/signup?step=account',
       label: 'Advisory',
       icon: MessageSquareText,
       highlight: false
     },
     {
-      to: '/weather',
+      to: '/signup?step=account',
       label: 'Weather',
       icon: CloudSun,
       highlight: false
     },
     {
-      to: '/history',
+      to: '/signup?step=account',
       label: 'Library',
       icon: History,
       highlight: false
     },
     {
-      to: '/directory',
+      to: '/signup?step=account',
       label: 'Experts',
       icon: Users,
       highlight: false
@@ -54,7 +54,7 @@ export const BottomNav: React.FC = () => {
           if (item.highlight) {
             return (
               <NavLink
-                key={item.to}
+                key={item.label}
                 to={item.to}
                 className={({ isActive }) =>
                   `flex flex-col items-center justify-center -mt-5 transition group ${
@@ -88,7 +88,7 @@ export const BottomNav: React.FC = () => {
 
           return (
             <NavLink
-              key={item.to}
+              key={item.label}
               to={item.to}
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center py-1 px-1.5 rounded-lg transition min-w-[48px] ${
