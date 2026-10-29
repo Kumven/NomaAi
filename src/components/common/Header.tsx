@@ -54,7 +54,7 @@ export const Header: React.FC = () => {
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#D5EEDC] shadow-xs">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2">
           {/* Brand Logo - Matches Figma Top Bar */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/home" className="flex items-center gap-2 group">
             <div className="w-9 h-9 rounded-xl bg-[#132E1E] flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform">
               <span className="text-base">🌱</span>
             </div>

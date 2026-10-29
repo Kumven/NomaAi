@@ -40,7 +40,7 @@ export const HomePage: React.FC = () => {
             <span>AI Crop Doctor for Nigerian Farmers</span>
           </span>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-black text-[#132E1E] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#132E1E] tracking-tight">
             Instant  <br /> disease detection
           </h1>
 
@@ -181,7 +181,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-lg font-bold text-[#132E1E] font-serif">
+            <h2 className="text-lg font-bold text-[#132E1E]">
               Ask Malam Noma AI
             </h2>
             <p className="text-xs text-[#526056] leading-relaxed">
@@ -210,7 +210,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-lg font-bold text-[#132E1E] font-serif">
+            <h2 className="text-lg font-bold text-[#132E1E]">
               Field Weather & Spraying
             </h2>
             <p className="text-xs text-[#526056] leading-relaxed">
@@ -242,7 +242,7 @@ export const HomePage: React.FC = () => {
               <History className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-sm text-[#132E1E] font-serif">{t('home.recentAdvice')}</h4>
+              <h4 className="font-bold text-sm text-[#132E1E]">{t('home.recentAdvice')}</h4>
               <p className="text-xs text-[#526056]">
                 {activeCasesCount > 0 ? `${activeCasesCount} active farm case(s) saved` : 'Saved offline on your device'}
               </p>
@@ -260,7 +260,7 @@ export const HomePage: React.FC = () => {
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-sm text-[#132E1E] font-serif">{t('home.findHelp')}</h4>
+              <h4 className="font-bold text-sm text-[#132E1E]">{t('home.findHelp')}</h4>
               <p className="text-xs text-[#526056]">
                 ADP extension officers & grain markets
               </p>

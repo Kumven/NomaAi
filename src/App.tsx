@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Header } from './components/common/Header';
 import { BottomNav } from './components/common/BottomNav';
 import { MockDataBadge } from './components/common/MockDataBadge';
+import { LandingPage } from './pages/LandingPage';
+import { TeamPage } from './pages/TeamPage';
 import { HomePage } from './pages/HomePage';
 import { DiagnosePage } from './pages/DiagnosePage';
 import { AdvisoryPage } from './pages/AdvisoryPage';
@@ -32,7 +34,20 @@ const AppLayout: React.FC = () => {
   const location = useLocation();
 
   const isAuthPage = ['/login', '/signup', '/otp'].includes(location.pathname);
+  const isLandingOrTeamPage = ['/', '/landing', '/team'].includes(location.pathname);
 
+  // Clean layout for standalone Landing Page and Team Page
+  if (isLandingOrTeamPage) {
+    return (
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/team" element={<TeamPage />} />
+      </Routes>
+    );
+  }
+
+  // Clean layout for authentication screens (login, signup, OTP)
   if (isAuthPage) {
     return (
       <div
@@ -49,6 +64,7 @@ const AppLayout: React.FC = () => {
     );
   }
 
+  // Core NomaAI Farmer Application Shell (Header + Content + Bottom Navigation)
   return (
     <div
       className={`min-h-screen bg-[#EDF7EF] flex flex-col text-[#1A261D] ${
@@ -64,7 +80,8 @@ const AppLayout: React.FC = () => {
       {/* Main Viewport */}
       <main className="flex-1 max-w-2xl w-full mx-auto px-3 sm:px-4 pt-3 pb-24">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/app" element={<HomePage />} />
           <Route
             path="/diagnose"
             element={
@@ -92,7 +109,7 @@ const AppLayout: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </main>
 

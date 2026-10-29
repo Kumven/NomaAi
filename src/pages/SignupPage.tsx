@@ -140,7 +140,7 @@ export const SignupPage: React.FC = () => {
 
           {/* Heading */}
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-serif font-black text-[#132E1E] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#132E1E] tracking-tight">
               {step === 'plan' ? t('auth.choosePlan') : t('auth.createAccount')}
             </h1>
             <p className="text-xs text-[#526056] leading-relaxed">

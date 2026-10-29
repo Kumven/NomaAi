@@ -125,7 +125,7 @@ export const DiagnosePage: React.FC = () => {
     <div className="space-y-6 pb-12">
       {/* Header Info */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-serif font-black text-[#132E1E] tracking-tight flex items-center gap-2">
+        <h1 className="text-2xl font-extrabold text-[#132E1E] tracking-tight flex items-center gap-2">
           <Camera className="w-6 h-6 text-[#2D6A4F]" />
           <span>{t('diagnose.title')}</span>
         </h1>

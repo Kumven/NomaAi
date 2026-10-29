@@ -93,7 +93,7 @@ export const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({ result
                 {result.cropName} • {result.locationState} State
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-black tracking-tight text-white">
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
               {result.diseaseName}
             </h2>
             {localName && (

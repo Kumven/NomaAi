@@ -1,6 +1,6 @@
 import type { Consultant, AgroDealer } from '../types';
 
-export const MOCK_CONSULTANTS: Consultant[] = ([
+const ALL_CONSULTANTS: Consultant[] = [
   {
     id: 'c-1',
     name: 'Dr. Ibrahim Aliyu Bello',
@@ -121,9 +121,11 @@ export const MOCK_CONSULTANTS: Consultant[] = ([
     consultationFee: '₦2,000 Community Rate',
     badge: 'Plateau Highland Specialist'
   }
-]).filter((consultant) => consultant.state === 'Plateau');
+];
 
-export const MOCK_AGRO_DEALERS: AgroDealer[] = ([
+export const MOCK_CONSULTANTS: Consultant[] = ALL_CONSULTANTS.filter((consultant) => consultant.state === 'Plateau');
+
+const ALL_AGRO_DEALERS: AgroDealer[] = [
   {
     id: 'd-1',
     businessName: 'Arewa Premier Seeds & Agro-Allied Ltd',
@@ -244,7 +246,9 @@ export const MOCK_AGRO_DEALERS: AgroDealer[] = ([
     acceptsBankTransfer: true,
     openingHours: 'Mon - Sat: 7:00 AM - 6:00 PM'
   }
-]).filter((dealer) => dealer.state === 'Plateau');
+];
+
+export const MOCK_AGRO_DEALERS: AgroDealer[] = ALL_AGRO_DEALERS.filter((dealer) => dealer.state === 'Plateau');
 
 export async function fetchDirectoryConsultants(
   stateFilter = '',

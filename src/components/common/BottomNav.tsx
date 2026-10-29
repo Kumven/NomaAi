@@ -8,11 +8,11 @@ export const BottomNav: React.FC = () => {
 
   const navItems = [
     {
-      to: '/',
+      to: '/home',
       label: t('nav.home'),
       icon: Home,
       highlight: false,
-      end: true
+      end: false
     },
     {
       to: '/diagnose',

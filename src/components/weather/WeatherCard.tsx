@@ -64,7 +64,7 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({ selectedState }) => {
               <span>•</span>
               <span>{weather.town}</span>
             </div>
-            <h2 className="text-3xl font-serif font-black mt-1 tracking-tight text-white">
+            <h2 className="text-3xl font-extrabold mt-1 tracking-tight text-white">
               {weather.state} State
             </h2>
             <p className="text-emerald-200 text-xs mt-0.5 font-medium">

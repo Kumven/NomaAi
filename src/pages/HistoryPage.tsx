@@ -25,7 +25,7 @@ export const HistoryPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-2xl font-serif font-black text-[#132E1E] tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-extrabold text-[#132E1E] tracking-tight flex items-center gap-2">
             <History className="w-6 h-6 text-[#2D6A4F]" />
             <span>{t('history.title')}</span>
           </h1>

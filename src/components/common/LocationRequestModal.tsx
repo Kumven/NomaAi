@@ -85,7 +85,7 @@ export const LocationRequestModal: React.FC<LocationRequestModalProps> = ({
               <MapPin className="w-6 h-6 text-[#2D6A4F]" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-[#132E1E] font-serif">
+              <h3 className="text-xl font-extrabold text-[#132E1E]">
                 Select Your Farm Location
               </h3>
               <p className="text-xs text-[#526056]">
