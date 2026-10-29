@@ -4,10 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useChatStore } from '../../store/useChatStore';
 import { useAppStore } from '../../store/useAppStore';
 import { askMalamNoma } from '../../services/advisoryService';
+import { ApiError } from '../../services/api';
+import { ACTION_COSTS } from '../../config/pricing';
+import { useWalletStore } from '../../store/useWalletStore';
 import { AudioPlayerButton } from '../common/AudioPlayerButton';
 import { QuickQuestionChips } from './QuickQuestionChips';
 import { VoicePromptModal } from './VoicePromptModal';
 import type { AdvisoryMessage } from '../../types';
+import { Link } from 'react-router-dom';
 
 function generateMessageId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
@@ -20,10 +24,13 @@ function getFormattedTime(): string {
 export const ChatInterface: React.FC = () => {
   const { t } = useTranslation();
   const { messages, addMessage, clearChat } = useChatStore();
-  const { language } = useAppStore();
+  const { language, isOffline } = useAppStore();
+  const { balance, fetchWallet, openTopUpModal } = useWalletStore();
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [actionError, setActionError] = useState('');
+  const sendingRef = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -36,8 +43,17 @@ export const ChatInterface: React.FC = () => {
 
   const handleSendMessage = async (textToSend: string) => {
     const trimmed = textToSend.trim();
-    if (!trimmed || isLoading) return;
+    if (!trimmed || sendingRef.current) return;
+    if (isOffline) {
+      setActionError(t('credits.offline'));
+      return;
+    }
+    if (balance !== null && balance < ACTION_COSTS.chatMessage) {
+      openTopUpModal();
+      return;
+    }
 
+    sendingRef.current = true;
     const currentTime = getFormattedTime();
     const userMsg: AdvisoryMessage = {
       id: generateMessageId('farmer'),
@@ -49,20 +65,23 @@ export const ChatInterface: React.FC = () => {
     addMessage(userMsg);
     setInputText('');
     setIsLoading(true);
+    setActionError('');
 
     try {
       const response = await askMalamNoma(trimmed, language);
       addMessage(response);
+      void fetchWallet();
     } catch (err) {
       console.error('Error getting advisory:', err);
-      addMessage({
-        id: generateMessageId('err'),
-        sender: 'assistant',
-        text: 'Network reconnection in progress. Operating from local farm cache.',
-        timestamp: currentTime
-      });
+      if (err instanceof ApiError && err.status === 402) {
+        openTopUpModal();
+        setActionError(t('credits.insufficient'));
+      } else {
+        setActionError(err instanceof Error ? err.message : t('advisory.requestFailed'));
+      }
     } finally {
       setIsLoading(false);
+      sendingRef.current = false;
     }
   };
 
@@ -97,6 +116,26 @@ export const ChatInterface: React.FC = () => {
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
+
+      <div className="space-y-2 border-b border-[#D5EEDC] bg-amber-50 px-4 py-3">
+        <p className="text-xs leading-relaxed text-amber-950">
+          {t('safety.guidanceOnly')} {t('credits.actionCost', { cost: ACTION_COSTS.chatMessage })}
+        </p>
+        <Link to="/directory" className="text-xs font-bold text-[#2D6A4F] underline">
+          {t('safety.contactConsultant')}
+        </Link>
+      </div>
+
+      {actionError && (
+        <p role="alert" className="mx-3 mt-2 rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-800">
+          {actionError}
+        </p>
+      )}
+      {isOffline && !actionError && (
+        <p role="status" className="mx-3 mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          {t('credits.offline')}
+        </p>
+      )}
 
       {/* Messages Feed */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -216,6 +255,7 @@ export const ChatInterface: React.FC = () => {
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            disabled={isLoading || isOffline}
             placeholder={t('advisory.inputPlaceholder')}
             className="flex-1 px-4 py-3 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs sm:text-sm text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
           />
@@ -223,7 +263,7 @@ export const ChatInterface: React.FC = () => {
           {/* Send Button - Golden Figma Accent */}
           <button
             type="submit"
-            disabled={!inputText.trim() || isLoading}
+            disabled={!inputText.trim() || isLoading || isOffline}
             className="p-3 rounded-2xl btn-golden hover:bg-[#E59828] disabled:opacity-40 text-[#161513] transition flex items-center justify-center cursor-pointer shrink-0 shadow-xs"
           >
             <Send className="w-5 h-5" />
@@ -231,7 +271,7 @@ export const ChatInterface: React.FC = () => {
         </form>
 
         <p className="text-[10px] text-stone-400 text-center mt-2">
-          {t('advisory.disclaimer')}
+          {t('credits.actionCost', { cost: ACTION_COSTS.chatMessage })} · {t('advisory.disclaimer')}
         </p>
       </div>
 

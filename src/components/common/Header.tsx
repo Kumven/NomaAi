@@ -6,6 +6,8 @@ import { useAppStore } from '../../store/useAppStore';
 import { languageOptions } from '../../i18n/config';
 import type { SupportedLanguage } from '../../types';
 import { LocationRequestModal } from './LocationRequestModal';
+import { CreditBadge } from '../wallet/CreditBadge';
+import { useWalletStore } from '../../store/useWalletStore';
 
 export const Header: React.FC = () => {
   const { i18n } = useTranslation();
@@ -25,6 +27,7 @@ export const Header: React.FC = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const clearWallet = useWalletStore((state) => state.clearWallet);
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -67,6 +70,7 @@ export const Header: React.FC = () => {
 
           {/* Controls: Location, Language, Auth (Sign In / Sign Up) */}
           <div className="flex items-center gap-1.5 sm:gap-2">
+            <CreditBadge />
             {/* Offline badge */}
             {isOffline && (
               <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-100 text-rose-800 text-[11px] font-medium">
@@ -180,6 +184,7 @@ export const Header: React.FC = () => {
                       type="button"
                       onClick={() => {
                         logout();
+                        clearWallet();
                         setIsUserMenuOpen(false);
                       }}
                       className="w-full text-left px-3.5 py-2 text-xs text-rose-700 hover:bg-rose-50 flex items-center gap-2 cursor-pointer font-bold border-t border-stone-100"

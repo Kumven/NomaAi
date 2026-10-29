@@ -8,40 +8,46 @@ export const BottomNav: React.FC = () => {
 
   const navItems = [
     {
-      to: '/signup?step=account',
+      to: '/',
       label: t('nav.home'),
       icon: Home,
-      highlight: false
+      highlight: false,
+      end: true
     },
     {
-      to: '/signup?step=account',
-      label: 'Scan',
+      to: '/diagnose',
+      label: t('nav.scan'),
       icon: Camera,
-      highlight: true
+      highlight: true,
+      end: false
     },
     {
-      to: '/signup?step=account',
-      label: 'Advisory',
+      to: '/advisory',
+      label: t('nav.advisory'),
       icon: MessageSquareText,
-      highlight: false
+      highlight: false,
+      end: false
     },
     {
-      to: '/signup?step=account',
-      label: 'Weather',
+      to: '/weather',
+      label: t('nav.weather'),
       icon: CloudSun,
-      highlight: false
+      highlight: false,
+      end: false
     },
     {
-      to: '/signup?step=account',
-      label: 'Library',
+      to: '/history',
+      label: t('nav.history'),
       icon: History,
-      highlight: false
+      highlight: false,
+      end: false
     },
     {
-      to: '/signup?step=account',
-      label: 'Experts',
+      to: '/directory',
+      label: t('nav.directory'),
       icon: Users,
-      highlight: false
+      highlight: false,
+      end: false
     }
   ];
 
@@ -56,6 +62,7 @@ export const BottomNav: React.FC = () => {
               <NavLink
                 key={item.label}
                 to={item.to}
+                end={item.end}
                 className={({ isActive }) =>
                   `flex flex-col items-center justify-center -mt-5 transition group ${
                     isActive ? 'scale-105' : 'hover:scale-105'
@@ -90,6 +97,7 @@ export const BottomNav: React.FC = () => {
             <NavLink
               key={item.label}
               to={item.to}
+              end={item.end}
               className={({ isActive }) =>
                 `flex flex-col items-center justify-center py-1 px-1.5 rounded-lg transition min-w-[48px] ${
                   isActive

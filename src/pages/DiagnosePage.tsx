@@ -5,14 +5,18 @@ import { CropSelector } from '../components/diagnosis/CropSelector';
 import { SymptomsSelector } from '../components/diagnosis/SymptomsSelector';
 import { ImageUploader } from '../components/diagnosis/ImageUploader';
 import { DiagnosisResultCard } from '../components/diagnosis/DiagnosisResultCard';
-import { simulateDiagnosisAnalysis, type SampleCase } from '../services/diagnosisService';
+import { runDiagnosis, type SampleCase } from '../services/diagnosisService';
 import type { CompressionResult } from '../services/compressionService';
 import type { DiagnosisResult } from '../types';
 import { useAppStore } from '../store/useAppStore';
+import { useWalletStore } from '../store/useWalletStore';
+import { ACTION_COSTS } from '../config/pricing';
+import { ApiError } from '../services/api';
 
 export const DiagnosePage: React.FC = () => {
   const { t } = useTranslation();
-  const { activeState } = useAppStore();
+  const { activeState, isOffline } = useAppStore();
+  const { balance, fetchWallet, openTopUpModal } = useWalletStore();
 
   const [selectedCropId, setSelectedCropId] = useState('maize');
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
@@ -22,6 +26,7 @@ export const DiagnosePage: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<DiagnosisResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const analyzingRef = React.useRef(false);
 
   const handleToggleSymptom = (symptom: string) => {
     setSelectedSymptoms((prev) =>
@@ -53,12 +58,22 @@ export const DiagnosePage: React.FC = () => {
   };
 
   const handleRunDiagnosis = async () => {
+    if (isAnalyzing || analyzingRef.current) return;
     if (!previewUrl) {
       setErrorMsg('Please snap a photo, upload an image, or pick one of the sample Nigerian crops below.');
       return;
     }
+    if (isOffline) {
+      setErrorMsg(t('credits.offline'));
+      return;
+    }
+    if (balance !== null && balance < ACTION_COSTS.diagnosis) {
+      openTopUpModal();
+      return;
+    }
 
     setIsAnalyzing(true);
+    analyzingRef.current = true;
     setErrorMsg(null);
 
     try {
@@ -71,8 +86,11 @@ export const DiagnosePage: React.FC = () => {
           }
         : undefined;
 
-      const result = await simulateDiagnosisAnalysis(
+      const result = await runDiagnosis(
         selectedCropId,
+        compressionStats?.file && compressionStats.file.size > 0
+          ? compressionStats.file
+          : previewUrl,
         previewUrl,
         selectedSymptoms,
         statsForPayload,
@@ -80,11 +98,18 @@ export const DiagnosePage: React.FC = () => {
       );
 
       setAnalysisResult(result);
+      void fetchWallet();
     } catch (err) {
       console.error('Diagnosis failed:', err);
-      setErrorMsg('Diagnosis simulation failed. Please try again.');
+      if (err instanceof ApiError && err.status === 402) {
+        openTopUpModal();
+        setErrorMsg(t('credits.insufficient'));
+      } else {
+        setErrorMsg(err instanceof Error ? err.message : t('diagnose.requestFailed'));
+      }
     } finally {
       setIsAnalyzing(false);
+      analyzingRef.current = false;
     }
   };
 
@@ -108,6 +133,12 @@ export const DiagnosePage: React.FC = () => {
           {t('diagnose.subtitle')}
         </p>
       </div>
+
+      {isOffline && !analysisResult && (
+        <p role="status" className="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-900">
+          {t('credits.offline')}
+        </p>
+      )}
 
       {analysisResult ? (
         <div className="space-y-4">
@@ -173,6 +204,7 @@ export const DiagnosePage: React.FC = () => {
 
             <ImageUploader
               onImageReady={handleImageReady}
+              onError={setErrorMsg}
               onSelectSampleCase={handleSelectSample}
               selectedPreviewUrl={previewUrl}
               compressionStats={compressionStats}
@@ -190,7 +222,7 @@ export const DiagnosePage: React.FC = () => {
           {/* Submit Action Button - Styled with Golden Figma Palette */}
           <button
             type="button"
-            disabled={isAnalyzing}
+            disabled={isAnalyzing || isOffline}
             onClick={handleRunDiagnosis}
             className={`w-full py-4 px-6 rounded-2xl font-black text-base shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer ${
               isAnalyzing
@@ -206,7 +238,7 @@ export const DiagnosePage: React.FC = () => {
             ) : (
               <>
                 <Sparkles className="w-5 h-5 text-[#161513]" />
-                <span>{t('diagnose.runDiagnosis')}</span>
+                <span>{t('diagnose.runDiagnosis')} · {t('credits.cost', { cost: ACTION_COSTS.diagnosis })}</span>
               </>
             )}
           </button>

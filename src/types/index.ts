@@ -153,7 +153,7 @@ export interface UserProfile {
   id: string;
   fullName: string;
   phone: string;
-  email: string;
+  email?: string;
   farmState: string;
   farmLga?: string;
   selectedPlan?: 'free' | 'premium';

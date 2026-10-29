@@ -2,34 +2,79 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Eye, EyeOff, Check } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { login } from '../services/api';
+import { login, requestOtp } from '../services/api';
+import { useTranslation } from 'react-i18next';
 
 export const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { setUser } = useAppStore();
   const redirectPath =
     (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/';
 
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isRequestingOtp, setIsRequestingOtp] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(
+    (location.state as { resetComplete?: boolean } | null)?.resetComplete
+      ? t('auth.passwordResetComplete')
+      : ''
+  );
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
 
+    const digits = phone.replace(/\D/g, '');
+    const localPhone = digits.replace(/^(234|0)/, '');
+    if (!/^[789]\d{9}$/.test(localPhone)) {
+      setErrorMessage(t('auth.invalidPhone'));
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const authenticatedUser = await login(email.trim(), password);
+      const authenticatedUser = await login(`+234${localPhone}`, password);
       setUser(authenticatedUser);
       navigate(redirectPath, { replace: true });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Could not sign in.');
+      setErrorMessage(error instanceof Error ? error.message : t('auth.signinFailed'));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const digits = phone.replace(/\D/g, '');
+    const localPhone = digits.replace(/^(234|0)/, '');
+    if (!/^[789]\d{9}$/.test(localPhone)) {
+      setErrorMessage(t('auth.enterPhoneForReset'));
+      return;
+    }
+
+    setIsRequestingOtp(true);
+    setErrorMessage('');
+    setStatusMessage('');
+    const normalizedPhone = `+234${localPhone}`;
+    try {
+      await requestOtp({ phone: normalizedPhone, purpose: 'password_reset' });
+      navigate('/otp', {
+        state: {
+          phone: normalizedPhone,
+          purpose: 'password_reset',
+          from: { pathname: redirectPath },
+          resetRequested: true
+        }
+      });
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('auth.otpFailed'));
+    } finally {
+      setIsRequestingOtp(false);
     }
   };
 
@@ -93,26 +138,36 @@ export const LoginPage: React.FC = () => {
 
           {/* Sign In Form */}
           <form onSubmit={handleSignIn} className="space-y-4">
+            {statusMessage && (
+              <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+                {statusMessage}
+              </p>
+            )}
             {errorMessage && (
               <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800">
                 {errorMessage}
               </p>
             )}
-            {/* Email */}
+            {/* Nigerian phone */}
             <div className="space-y-1.5">
-              <label htmlFor="login-email" className="text-xs font-bold text-[#132E1E]">
-                Email address
+              <label htmlFor="login-phone" className="text-xs font-bold text-[#132E1E]">
+                {t('auth.phone')}
               </label>
-              <input
-                id="login-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="farmer@example.com"
-                required
-                className="w-full h-11 px-3.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs text-[#132E1E] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
-              />
+              <div className="flex gap-2">
+                <span className="inline-flex h-11 items-center rounded-2xl border border-[#D5EEDC] bg-[#F4FAF5] px-3 text-xs font-bold text-[#132E1E]">
+                  🇳🇬 +234
+                </span>
+                <input
+                  id="login-phone"
+                  type="tel"
+                  autoComplete="tel-national"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={t('auth.phoneExample')}
+                  required
+                  className="h-11 flex-1 rounded-2xl border border-[#D5EEDC] bg-[#F4FAF5] px-3.5 text-xs text-[#132E1E] placeholder:text-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2D6A4F]"
+                />
+              </div>
             </div>
 
             {/* Password */}
@@ -121,10 +176,11 @@ export const LoginPage: React.FC = () => {
                 <label className="text-xs font-bold text-[#132E1E]">Password</label>
                 <button
                   type="button"
-                  onClick={() => setErrorMessage('Password reset is not available yet.')}
+                  onClick={() => void handleForgotPassword()}
+                  disabled={isLoading || isRequestingOtp}
                   className="text-xs font-bold text-[#2D6A4F] hover:underline cursor-pointer"
                 >
-                  Forgot password?
+                  {isRequestingOtp ? t('auth.sendingOtp') : t('auth.forgotPassword')}
                 </button>
               </div>
 
@@ -154,7 +210,7 @@ export const LoginPage: React.FC = () => {
               className="w-full h-12 btn-golden rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >
               {isLoading ? (
-                <span>Signing in...</span>
+                <span>{t('auth.signingIn')}</span>
               ) : (
                 <>
                   <span>Sign In</span>

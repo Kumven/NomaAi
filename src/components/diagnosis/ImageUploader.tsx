@@ -6,6 +6,7 @@ import { SAMPLE_CROP_CASES, type SampleCase } from '../../services/diagnosisServ
 
 interface ImageUploaderProps {
   onImageReady: (previewUrl: string, compressionStats?: CompressionResult) => void;
+  onError: (message: string) => void;
   onSelectSampleCase: (sample: SampleCase) => void;
   selectedPreviewUrl?: string;
   compressionStats?: CompressionResult | null;
@@ -14,6 +15,7 @@ interface ImageUploaderProps {
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
   onImageReady,
+  onError,
   onSelectSampleCase,
   selectedPreviewUrl,
   compressionStats,
@@ -24,9 +26,24 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const handleFile = async (file: File) => {
-    if (!file || !file.type.startsWith('image/')) return;
+    setUploadError('');
+    onError('');
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      const message = t('diagnose.invalidImageType');
+      setUploadError(message);
+      onError(message);
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      const message = t('diagnose.imageTooLarge');
+      setUploadError(message);
+      onError(message);
+      return;
+    }
 
     try {
       setIsCompressing(true);
@@ -34,9 +51,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       onImageReady(result.previewUrl, result);
     } catch (err) {
       console.error('Failed to compress image:', err);
-      // Fallback: create raw object URL
-      const rawUrl = URL.createObjectURL(file);
-      onImageReady(rawUrl);
+      const message = t('diagnose.compressionFailed');
+      setUploadError(message);
+      onError(message);
     } finally {
       setIsCompressing(false);
     }
@@ -44,7 +61,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
+      void handleFile(e.target.files[0]);
+      e.target.value = '';
     }
   };
 
@@ -52,7 +70,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     e.preventDefault();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
+      void handleFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -193,6 +211,11 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               Hold camera 15-20cm from affected crop leaves or stem. Sharp daylight gives best results.
             </p>
           </div>
+        )}
+        {uploadError && (
+          <p role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-left text-xs text-rose-800">
+            {uploadError}
+          </p>
         )}
       </div>
 

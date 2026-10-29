@@ -1,4 +1,5 @@
 import type { AdvisoryMessage } from '../types';
+import { ApiUnavailableError, sendAdvisoryMessage } from './api';
 
 export interface PredefinedFaq {
   id: string;
@@ -64,7 +65,7 @@ export const FREQUENT_FARM_QUESTIONS: PredefinedFaq[] = [
   }
 ];
 
-export async function askMalamNoma(
+async function mockMalamNoma(
   userQuery: string,
   userLanguage = 'en'
 ): Promise<AdvisoryMessage> {
@@ -123,4 +124,17 @@ export async function askMalamNoma(
     ],
     disclaimer: 'Advisory generated from the Plateau State agronomic knowledge base (Mock Mode).'
   };
+}
+
+export async function askMalamNoma(
+  userQuery: string,
+  userLanguage = 'en'
+): Promise<AdvisoryMessage> {
+  try {
+    return await sendAdvisoryMessage({ message: userQuery, language: userLanguage });
+  } catch (error) {
+    if (!(error instanceof ApiUnavailableError)) throw error;
+    console.warn('Advisory API unavailable; using the clearly marked local FAQ demo.', error);
+    return mockMalamNoma(userQuery, userLanguage);
+  }
 }

@@ -12,6 +12,10 @@ import { HistoryPage } from './pages/HistoryPage';
 import { DirectoryPage } from './pages/DirectoryPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
+import { OtpPage } from './pages/OtpPage';
+import { WalletPage } from './pages/WalletPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { TopUpModal } from './components/wallet/TopUpModal';
 import { useAppStore } from './store/useAppStore';
 
 const queryClient = new QueryClient({
@@ -23,22 +27,11 @@ const queryClient = new QueryClient({
   }
 });
 
-const RequireAuthentication: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAuthenticated } = useAppStore();
-  const location = useLocation();
-
-  if (!user || !isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return <>{children}</>;
-};
-
 const AppLayout: React.FC = () => {
   const { fontSize } = useAppStore();
   const location = useLocation();
 
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  const isAuthPage = ['/login', '/signup', '/otp'].includes(location.pathname);
 
   if (isAuthPage) {
     return (
@@ -50,6 +43,7 @@ const AppLayout: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/otp" element={<OtpPage />} />
         </Routes>
       </div>
     );
@@ -74,21 +68,37 @@ const AppLayout: React.FC = () => {
           <Route
             path="/diagnose"
             element={
-              <RequireAuthentication>
+              <ProtectedRoute>
                 <DiagnosePage />
-              </RequireAuthentication>
+              </ProtectedRoute>
             }
           />
-          <Route path="/advisory" element={<AdvisoryPage />} />
+          <Route
+            path="/advisory"
+            element={
+              <ProtectedRoute>
+                <AdvisoryPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/weather" element={<WeatherPage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/directory" element={<DirectoryPage />} />
+          <Route
+            path="/wallet"
+            element={
+              <ProtectedRoute>
+                <WalletPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
       {/* Sticky Mobile Bottom Navigation */}
       <BottomNav />
+      <TopUpModal />
     </div>
   );
 };

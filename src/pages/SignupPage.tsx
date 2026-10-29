@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft,
   Eye,
@@ -16,18 +17,17 @@ import { signup } from '../services/api';
 import { LocationRequestModal } from '../components/common/LocationRequestModal';
 
 export const SignupPage: React.FC = () => {
-  type SignupStep = 'plan' | 'account' | 'payment';
+  const { t } = useTranslation();
+  type SignupStep = 'plan' | 'account';
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUser, user, activeLga, setActiveState, setUserLocation } = useAppStore();
+  const { activeLga, setActiveState, setUserLocation } = useAppStore();
   const redirectPath =
     (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || '/';
 
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [countryCode, setCountryCode] = useState('+234');
   const [email, setEmail] = useState('');
-  const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium'>('free');
   const [step, setStep] = useState<SignupStep>(() =>
     new URLSearchParams(location.search).get('step') === 'account' ? 'account' : 'plan'
   );
@@ -60,24 +60,41 @@ export const SignupPage: React.FC = () => {
     setIsLoading(true);
     setErrorMessage('');
 
+    const digits = phoneNumber.replace(/\D/g, '');
+    const localPhone = digits.replace(/^(234|0)/, '');
+    if (!/^[789]\d{9}$/.test(localPhone)) {
+      setErrorMessage(t('auth.invalidPhone'));
+      setIsLoading(false);
+      return;
+    }
+
+    if (!farmLga) {
+      setErrorMessage(t('auth.selectLga'));
+      setIsLoading(false);
+      return;
+    }
+
+    const phone = `+234${localPhone}`;
     try {
-      const newUser = await signup({
+      await signup({
         fullName,
-        phone: `${countryCode}${phoneNumber.replace(/\D/g, '').replace(/^0/, '')}`,
-        email,
+        phone,
+        ...(email.trim() ? { email: email.trim() } : {}),
         password,
         farmState: PLATEAU_STATE.state,
         farmLga,
-        selectedPlan
+        selectedPlan: 'free'
       });
-      setUser(newUser);
-      if (selectedPlan === 'premium') {
-        setStep('payment');
-      } else {
-        navigate(redirectPath, { replace: true });
-      }
+      navigate('/otp', {
+        state: {
+          phone,
+          purpose: 'signup',
+          requestOnMount: true,
+          from: { pathname: redirectPath }
+        }
+      });
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Could not create your account.');
+      setErrorMessage(error instanceof Error ? error.message : t('auth.signupFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -124,38 +141,34 @@ export const SignupPage: React.FC = () => {
           {/* Heading */}
           <div className="space-y-1">
             <h1 className="text-2xl sm:text-3xl font-serif font-black text-[#132E1E] tracking-tight">
-              {step === 'plan' ? 'Choose your plan' : step === 'account' ? 'Create your account' : 'Premium checkout'}
+              {step === 'plan' ? t('auth.choosePlan') : t('auth.createAccount')}
             </h1>
             <p className="text-xs text-[#526056] leading-relaxed">
               {step === 'plan'
-                ? 'Choose Free or Premium to continue.'
+                ? t('auth.choosePlanSubtitle')
                 : step === 'account'
-                  ? 'Create your Plateau farmer account.'
-                  : 'Your account is created. Review the Premium payment step below.'}
+                  ? t('auth.accountSubtitle')
+                  : t('auth.accountSubtitle')}
             </p>
           </div>
 
           {step === 'plan' && (
             <div className="flex flex-col sm:flex-row gap-3">
               <section className="flex-1 flex flex-col p-4 rounded-2xl border border-[#D5EEDC] bg-white">
-                <div className="text-sm font-extrabold text-[#132E1E]">Free</div>
+                <div className="text-sm font-extrabold text-[#132E1E]">{t('auth.freePlan')}</div>
                 <div className="mt-0.5 text-xs font-semibold text-[#2D6A4F]">₦0 — Free to use</div>
-                <p className="mt-2 text-xs text-[#526056]">For farmers who need basic farming advice.</p>
+                <p className="mt-2 text-xs text-[#526056]">{t('auth.freeDescription')}</p>
                 <ul className="mt-3 flex-1 space-y-1.5 text-xs text-[#1B4332]">
-                  <li>• Upload a sick-plant photo to check what may be wrong</li>
-                  <li>• Check local weather and available weather alerts</li>
-                  <li>• Get basic crop-care advice</li>
-                  <li>• Proposed limit: 3 crop checks per month</li>
+                  <li>• {t('auth.freeBenefitWeather')}</li>
+                  <li>• {t('auth.freeBenefitPaid')}</li>
+                  <li>• {t('auth.freeBenefitStarter')}</li>
                 </ul>
                 <button
                   type="button"
-                  onClick={() => {
-                    setSelectedPlan('free');
-                    setStep('account');
-                  }}
+                  onClick={() => setStep('account')}
                   className="w-full mt-4 min-h-11 rounded-xl border border-[#2D6A4F] text-[#1B4332] text-xs font-bold hover:bg-[#EAF7EE] transition"
                 >
-                  Choose Free
+                  {t('auth.freePlan')}
                 </button>
               </section>
 
@@ -164,28 +177,17 @@ export const SignupPage: React.FC = () => {
                   <Sparkles className="w-4 h-4 text-[#EFA131]" />
                   Premium
                 </div>
-                <div className="mt-0.5 text-xs font-semibold text-[#2D6A4F]">Paid monthly subscription</div>
-                <p className="mt-2 text-xs text-[#526056]">For farmers who need more detailed advice and support.</p>
+                <div className="mt-0.5 text-xs font-semibold text-[#2D6A4F]">{t('auth.premiumComingSoon')}</div>
+                <p className="mt-2 text-xs text-[#526056]">{t('auth.premiumDescription')}</p>
                 <ul className="mt-3 flex-1 space-y-1.5 text-xs text-[#1B4332]">
-                  <li>• Everything in Free, plus more plant disease checks</li>
-                  <li>• Detailed crop and farm-condition advice</li>
-                  <li>• Personalized weather and crop-risk alerts</li>
-                  <li>• Expert support for difficult cases</li>
-                  <li>• Records of past plant problems and advice</li>
-                  <li>• Faster customer support</li>
+                  <li>• {t('auth.premiumBenefitNotice')}</li>
                 </ul>
-                <p className="mt-3 text-[11px] leading-relaxed text-amber-900">
-                  Price and usage limits are being tested; they are not set yet.
-                </p>
                 <button
                   type="button"
-                  onClick={() => {
-                    setSelectedPlan('premium');
-                    setStep('account');
-                  }}
-                  className="w-full mt-3 min-h-11 btn-golden rounded-xl text-xs font-bold"
+                  disabled
+                  className="w-full mt-3 min-h-11 btn-golden rounded-xl text-xs font-bold opacity-60 cursor-not-allowed"
                 >
-                  Choose Premium
+                  {t('auth.premiumButton')}
                 </button>
               </section>
             </div>
@@ -196,7 +198,7 @@ export const SignupPage: React.FC = () => {
           <>
           <div className="flex items-center justify-between rounded-xl bg-[#F4FAF5] px-3 py-2 text-xs">
             <span className="font-semibold text-[#1B4332]">
-              Selected plan: <strong>{selectedPlan === 'free' ? 'Free (₦0)' : 'Premium (monthly)'}</strong>
+              {t('auth.selectedPlan')} <strong>{t('auth.freePlan')}</strong>
             </span>
             <button type="button" onClick={() => setStep('plan')} className="font-bold text-[#2D6A4F] underline">
               Change
@@ -210,7 +212,7 @@ export const SignupPage: React.FC = () => {
             )}
             {/* Full Name */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#132E1E]">Full Name</label>
+              <label className="text-xs font-bold text-[#132E1E]">{t('auth.fullName')}</label>
               <input
                 type="text"
                 value={fullName}
@@ -232,21 +234,15 @@ export const SignupPage: React.FC = () => {
               </div>
 
               <div className="flex gap-2">
-                <select
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  className="h-11 px-2.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs font-bold text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] cursor-pointer"
-                >
-                  <option value="+234">🇳🇬 +234</option>
-                  <option value="+233">🇬🇭 +233</option>
-                  <option value="+254">🇰🇪 +254</option>
-                </select>
-
+                <span className="inline-flex h-11 items-center rounded-2xl border border-[#D5EEDC] bg-[#F4FAF5] px-3 text-xs font-bold text-[#132E1E]">
+                  🇳🇬 +234
+                </span>
                 <input
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="e.g. 0803 123 4567"
+                  placeholder={t('auth.phoneExample')}
+                  autoComplete="tel-national"
                   required
                   className="flex-1 h-11 px-3.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
                 />
@@ -255,13 +251,12 @@ export const SignupPage: React.FC = () => {
 
             {/* Email Address */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-[#132E1E]">Email Address</label>
+              <label className="text-xs font-bold text-[#132E1E]">{t('auth.emailOptional')}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. aminu.bello@example.com"
-                required
+                placeholder={t('auth.emailExample')}
                 className="w-full h-11 px-3.5 bg-[#F4FAF5] rounded-2xl border border-[#D5EEDC] text-xs text-[#132E1E] focus:outline-none focus:ring-2 focus:ring-[#2D6A4F] focus:bg-white transition"
               />
             </div>
@@ -336,7 +331,7 @@ export const SignupPage: React.FC = () => {
                 <span>Creating account...</span>
               ) : (
                 <>
-                  <span>{selectedPlan === 'free' ? 'Create Free Account' : 'Create Account & Continue to Payment'}</span>
+                  <span>{t('auth.createVerify')}</span>
                   <span className="text-base font-bold">→</span>
                 </>
               )}
@@ -378,35 +373,6 @@ export const SignupPage: React.FC = () => {
           </>
           )}
 
-          {step === 'payment' && (
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-[#D5EEDC] bg-[#F4FAF5] p-4 space-y-2">
-                <div className="flex items-center gap-2 font-bold text-[#132E1E]">
-                  <ShieldCheck className="w-5 h-5 text-[#2D6A4F]" />
-                  Account created
-                </div>
-                <p className="text-xs text-[#526056]">
-                  Your Premium plan is selected. Complete checkout to activate Premium features.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-2">
-                <h2 className="text-sm font-bold text-amber-950">Payment setup is not available yet</h2>
-                <p className="text-xs leading-relaxed text-amber-900">
-                  Premium pricing and usage limits are still being tested. This preview does not collect payment or activate Premium access.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  if (user) setUser({ ...user, selectedPlan: 'free' });
-                  navigate(redirectPath, { replace: true });
-                }}
-                className="w-full min-h-11 btn-golden rounded-xl text-xs font-bold"
-              >
-                Switch to Free and continue
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

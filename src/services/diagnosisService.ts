@@ -1,4 +1,5 @@
 import type { CropInfo, DiagnosisResult, SeverityLevel } from '../types';
+import { analyzeDiagnosis, ApiUnavailableError } from './api';
 
 export const NIGERIAN_CROPS: CropInfo[] = [
   {
@@ -256,7 +257,7 @@ export const MOCK_DIAGNOSES_KNOWLEDGE: Record<string, Partial<DiagnosisResult>> 
   }
 };
 
-export async function simulateDiagnosisAnalysis(
+async function simulateDiagnosisAnalysis(
   cropId: string,
   imagePreviewUrl: string,
   symptoms: string[] = [],
@@ -295,4 +296,27 @@ export async function simulateDiagnosisAnalysis(
   };
 
   return result;
+}
+
+export async function runDiagnosis(
+  cropId: string,
+  image: File | string,
+  imagePreviewUrl: string,
+  symptoms: string[] = [],
+  imageStats?: DiagnosisResult['imageStats'],
+  locationState = 'Plateau'
+): Promise<DiagnosisResult> {
+  try {
+    return await analyzeDiagnosis({
+      cropId,
+      image,
+      symptoms,
+      imageStats,
+      locationState
+    });
+  } catch (error) {
+    if (!(error instanceof ApiUnavailableError)) throw error;
+    console.warn('Diagnosis API unavailable; using the clearly marked local demo result.', error);
+    return simulateDiagnosisAnalysis(cropId, imagePreviewUrl, symptoms, imageStats, locationState);
+  }
 }

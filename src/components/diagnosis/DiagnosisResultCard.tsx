@@ -133,6 +133,13 @@ export const DiagnosisResultCard: React.FC<DiagnosisResultCardProps> = ({ result
       </div>
 
       <div className="p-5 sm:p-6 space-y-5">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+          <p>{t('safety.guidanceOnly')}</p>
+          <Link to="/directory" className="mt-1 inline-block font-bold text-[#2D6A4F] underline">
+            {t('safety.contactConsultant')}
+          </Link>
+        </div>
+
         {/* Immediate Field Action Box */}
         <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300/80 space-y-2">
           <div className="flex items-center gap-2 text-amber-950 font-extrabold text-sm uppercase tracking-wide">
